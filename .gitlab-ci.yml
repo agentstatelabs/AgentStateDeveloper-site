@@ -1,0 +1,38 @@
+# CI for AgentStateDeveloper-site (Astro static site at repo root)
+stages:
+  - build
+  - publish
+
+build-site:
+  stage: build
+  image: node:22-bookworm
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+  script:
+    - npm ci --no-audit --no-fund
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+
+# Leak-scan-gated publish of main -> GitHub (which then deploys via Pages Action).
+# Requires group/project CI vars: GITHUB_REPO, GITHUB_TOKEN, and file-var
+# LEAKSCAN_LOCAL (org patterns). Job is skipped until GITHUB_REPO is set.
+publish-github:
+  stage: publish
+  image: alpine:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $GITHUB_REPO'
+  variables:
+    GIT_DEPTH: 0   # leak-scan --range HEAD needs full history
+  before_script:
+    - apk add --no-cache git bash grep curl
+  script:
+    - printf '%s' "$LEAKSCAN_LOCAL" > .leakscan.local
+    - chmod +x scripts/leak-scan.sh scripts/publish-to-github.sh
+    - ./scripts/publish-to-github.sh

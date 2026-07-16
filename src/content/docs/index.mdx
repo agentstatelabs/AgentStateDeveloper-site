@@ -1,0 +1,60 @@
+---
+title: AgentStateDeveloper
+description: Code-level context and audit overlay for agent-authored code.
+template: splash
+hero:
+  tagline: Decision ledger, effect declarations, and call graph for every function — queryable by agents, checked into git.
+  actions:
+    - text: Get Started
+      link: /guides/quickstart/
+      icon: right-arrow
+    - text: Introduction
+      link: /guides/introduction/
+      variant: secondary
+    - text: View on GitLab
+      link: https://github.com/agentstatelabs/AgentStateDeveloper
+      variant: minimal
+      icon: github
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What ASD adds to your repo
+
+Every function gets three things: a decision ledger, an effect declaration, and a place in the call graph. All checked into `.asd/v1/`. All queryable by the coding agents that write the code.
+
+<CardGrid>
+  <Card title="Decision Ledger" icon="pencil">
+    Append decisions, hazards, rationale, and constraints to any symbol. Entries survive renames. Approve, reject, or withdraw.
+  </Card>
+  <Card title="Effect Declarations" icon="warning">
+    17 categories (`io.fs.read`, `io.net.out`, `io.db.write`, …). Declared per symbol, propagated transitively through the call graph.
+  </Card>
+  <Card title="Semantic Index" icon="magnifier">
+    Every function, method, and class parsed by tree-sitter. 9 languages: Python, TypeScript, Rust, Go, Java, C#, Ruby, Kotlin, Swift.
+  </Card>
+  <Card title="Call Graph" icon="random">
+    Intra- and cross-module edges. Transitive effects propagate automatically.
+  </Card>
+  <Card title="Policy Gate" icon="approve-check-circle">
+    File-backed JSON rules: allow, deny, or require-approval per action and actor kind.
+  </Card>
+  <Card title="Ratification" icon="approve-check">
+    Approve, reject, or withdraw ledger entries. Full approval workflow.
+  </Card>
+  <Card title="Audit Event Stream" icon="list-format">
+    Hash-chained JSONL log of every ledger mutation and policy evaluation.
+  </Card>
+  <Card title="Git-native Sidecar" icon="seti:folder">
+    Ledger entries and effects live in `.asd/v1/` — checked into git, travel with every clone.
+  </Card>
+  <Card title="Agent Thinking" icon="comment">
+    Hypotheses, mental models, failed attempts, and open questions — stored per symbol, surfaced automatically by `prepare-change`, and shared across sessions via git.
+  </Card>
+</CardGrid>
+
+## Surfaces
+
+- **`asd`** — CLI: `init`, `index`, `read`, `ledger`, `think`, `policy`, `verify-effects`, `trace`, `sync`, `hydrate`, `audit`, `hooks`, `mcp`
+- **`asd-mcp`** — stdio MCP server exposing 19+ tools to coding agents
+- **`asd-serve`** — HTTP server + Lens review UI
