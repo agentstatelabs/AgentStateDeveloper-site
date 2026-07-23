@@ -14,10 +14,24 @@ cargo install --path crates/agentstatedeveloper-mcp   # installs asd-mcp + asd-s
 
 ## Initialize your project
 
+One command sets everything up:
+
 ```bash
 cd my-project
-asd init
-asd index .
+asd onboard
+```
+
+`asd onboard` runs `init → index → conclusions import → mcp install --project`, so
+you get a live index **and** an agent-reachable MCP server (a project-scoped
+`.mcp.json`) in a single step. It's idempotent — safe to re-run. Pass `--no-mcp` to
+skip the MCP registration.
+
+Prefer the individual steps? They're still available:
+
+```bash
+asd init          # installs git hooks, updates .gitignore
+asd index .       # builds the semantic index
+asd mcp install   # registers the MCP server (see below)
 ```
 
 `asd init` installs git hooks (pre-commit `asd sync --prune`, post-merge / post-checkout `asd hydrate && asd index .`) and adds `.asd-state.db` to `.gitignore`, leaving `.asd/v1/` tracked.
@@ -40,11 +54,16 @@ asd ledger append payments.chargeCard \
 
 ## Register the MCP server with your agents
 
+If you ran `asd onboard`, this is already done — it registers a **project-scoped**
+server (a `.mcp.json` in the repo). Restart your agent to activate.
+
+To register manually, or to write into your agents' **global** configs instead:
+
 ```bash
 asd mcp install
 ```
 
-Writes the `asd-mcp` entry into `mcpServers` in every config it finds (Claude Code, Claude Desktop, Cursor). Restart the tool to activate.
+Writes the `asd-mcp` entry into `mcpServers` in every config it finds (Claude Code, Claude Desktop, Cursor). Use `--project` to scope it to a single repo's `.mcp.json` instead. Restart the tool to activate.
 
 ## Sync the sidecar and commit
 
@@ -68,8 +87,16 @@ Projects `read` / `callers` / `callees` responses down to load-bearing fields on
 
 ```bash
 git clone <repo>
-asd init        # installs hooks, updates .gitignore
-asd hydrate     # loads .asd/v1/ → local SQLite
-asd index .     # rebuilds derived semantic index
-asd mcp install # registers asd-mcp with your agent tools
+asd onboard     # init → index → conclusions import → mcp install (--project)
+```
+
+`asd onboard` is the one-command path and is idempotent. Add `--no-mcp` to skip the
+MCP registration. If the clone ships a committed sidecar you want to restore exactly,
+run `asd hydrate --verify` before indexing:
+
+```bash
+asd init
+asd hydrate --verify   # restore .asd/v1/ → local SQLite, catch drift
+asd index .
+asd mcp install
 ```
