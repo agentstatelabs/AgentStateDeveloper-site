@@ -39,6 +39,13 @@ export default defineConfig({
 					],
 				},
 				{
+					label: 'Agent workflow',
+					items: [
+						{ label: 'Parallel agents (worktrees)', slug: 'guides/worktree' },
+						{ label: 'On-demand help', slug: 'guides/help' },
+					],
+				},
+				{
 					label: 'Reference',
 					items: [
 						{ label: 'MCP Tools', slug: 'reference/mcp-tools' },
