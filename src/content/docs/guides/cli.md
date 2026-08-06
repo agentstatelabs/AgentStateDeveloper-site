@@ -3,7 +3,7 @@ title: CLI (asd)
 description: Top-level command reference for the asd CLI.
 ---
 
-Top-level commands: `init`, `index`, `read`, `ledger`, `think`, `policy`, `verify-effects`, `trace`, `sync`, `hydrate`, `audit`, `hooks`, `mcp`, `conclusions`.
+Top-level commands: `onboard`, `init`, `index`, `read`, `ledger`, `think`, `impact`, `prepare-change`, `policy`, `verify-effects`, `trace`, `sync`, `hydrate`, `audit`, `hooks`, `mcp`, `skill`, `watch`, `conclusions`, [`worktree`](/guides/worktree/), [`help`](/guides/help/), `bootstrap`.
 
 Each command is also available via clap aliases that match the MCP tool names, so agents trained on MCP-era docs can type either `asd ledger append` or `asd ledger_append`.
 

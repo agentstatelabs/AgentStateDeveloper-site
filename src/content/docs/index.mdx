@@ -21,7 +21,7 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 
 ## What ASD adds to your repo
 
-Every function gets three things: a decision ledger, an effect declaration, and a place in the call graph. All checked into `.asd/v1/`. All queryable by the coding agents that write the code.
+Every function gets three things: a decision ledger, an effect declaration, and a place in the call graph. All checked into git via a compact `.asd/conclusions/` sidecar. All queryable by the coding agents that write the code.
 
 <CardGrid>
   <Card title="Decision Ledger" icon="pencil">
@@ -46,7 +46,7 @@ Every function gets three things: a decision ledger, an effect declaration, and 
     Hash-chained JSONL log of every ledger mutation and policy evaluation.
   </Card>
   <Card title="Git-native Sidecar" icon="seti:folder">
-    Ledger entries and effects live in `.asd/v1/` — checked into git, travel with every clone.
+    The compact committed sidecar (decisions, hazards, recipes, …) lives in `.asd/conclusions/*.jsonl` — checked into git, travels with every clone.
   </Card>
   <Card title="Agent Thinking" icon="comment">
     Hypotheses, mental models, failed attempts, and open questions — stored per symbol, surfaced automatically by `prepare-change`, and shared across sessions via git.
@@ -55,6 +55,6 @@ Every function gets three things: a decision ledger, an effect declaration, and 
 
 ## Surfaces
 
-- **`asd`** — CLI: `init`, `index`, `read`, `ledger`, `think`, `policy`, `verify-effects`, `trace`, `sync`, `hydrate`, `audit`, `hooks`, `mcp`
-- **`asd-mcp`** — stdio MCP server exposing 19+ tools to coding agents
+- **`asd`** — CLI: `onboard`, `init`, `index`, `read`, `ledger`, `think`, `impact`, `prepare-change`, `worktree`, `sync`, `hydrate`, `audit`, `hooks`, `mcp`, `skill`, `watch`, `help`, `bootstrap`
+- **`asd-mcp`** — stdio MCP server exposing 64 tools to coding agents
 - **`asd-serve`** — HTTP server + Lens review UI

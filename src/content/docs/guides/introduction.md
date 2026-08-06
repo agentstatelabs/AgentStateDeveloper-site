@@ -21,7 +21,7 @@ Coding agents now write, refactor, and review code at human-equivalent rates. Th
 | **Ratification** | Approve, reject, or withdraw ledger entries. Full approval workflow. |
 | **Audit event stream** | Hash-chained JSONL log of every ledger mutation and policy evaluation. |
 | **Agent thinking** | Hypotheses, mental models, failed attempts, and open questions — stored per symbol, surfaced by `prepare-change`, shared across sessions via git. |
-| **Git-native sidecar** | Ledger entries and effects live in `.asd/v1/` — checked into git, travel with every clone. |
+| **Git-native sidecar** | The compact committed sidecar (decisions, hazards, recipes, …) lives in `.asd/conclusions/*.jsonl` — checked into git, travels with every clone. |
 
 ## Surfaces
 
