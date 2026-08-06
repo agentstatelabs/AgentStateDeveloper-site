@@ -5,12 +5,20 @@ description: Index a repo and append your first ledger entry in under 5 minutes.
 
 ## Install
 
+Homebrew (recommended):
+
 ```bash
-cargo install --path crates/agentstatedeveloper-cli   # installs asd
-cargo install --path crates/agentstatedeveloper-mcp   # installs asd-mcp + asd-serve
+brew tap agentstatelabs/agentstatedeveloper
+brew install asd   # installs asd, asd-mcp, and asd-serve
 ```
 
-> The crate name `asd` on crates.io is taken by an unrelated diff tool. Install from source.
+Or the cross-platform one-liner:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/agentstatelabs/AgentStateDeveloper/main/install.sh | sh
+```
+
+> Building from source? `cargo install --path crates/agentstatedeveloper-cli` (and `...-mcp` for asd-mcp + asd-serve). The crate name `asd` on crates.io is an unrelated diff tool, so install via Homebrew or source.
 
 ## Initialize your project
 

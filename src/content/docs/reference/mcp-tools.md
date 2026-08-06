@@ -1,9 +1,9 @@
 ---
 title: MCP Tools
-description: 19+ MCP tools exposed by asd-mcp.
+description: 64 MCP tools exposed by asd-mcp.
 ---
 
-Agents access ASD through 19+ MCP tools organized by category.
+Agents access ASD through **64 MCP tools** organized by category. A representative selection is listed below; run `asd help` (or the MCP `help` tool) for the full, always-current catalog.
 
 ## Code navigation
 
