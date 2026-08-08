@@ -79,20 +79,20 @@ import Site from '../layouts/Site.astro';
       <p>ASD isn't a library you import — it's a sidecar that lives in <code>.asd/</code>, travels with every clone, and exposes the same graph to your shell, your coding agents, and the browser.</p>
     </div>
     <div class="card-grid cols-3" data-reveal>
-      <div class="card">
+      <div class="card c-green">
         <div class="slug">cli/</div>
         <h3>asd</h3>
         <p>Everything the agents can do, you can do from a shell: index, read a symbol, query effects, append and ratify ledger entries, tail the audit log.</p>
         <pre><span class="p">$</span> asd read payments.chargeCard
 <span class="p">$</span> asd effects_of processOrder</pre>
       </div>
-      <div class="card">
+      <div class="card c-purple">
         <div class="slug">mcp/</div>
         <h3>asd-mcp</h3>
         <p>A stdio MCP server exposing 64 tools to Claude Code, Cursor, Codex, and Gemini — code search, call graph, effects, and ledger, right where the agent works.</p>
         <pre><span class="p">$</span> asd onboard   <span style="color:var(--text-muted)"># registers MCP</span></pre>
       </div>
-      <div class="card">
+      <div class="card c-amber">
         <div class="slug">http/</div>
         <h3>asd-serve</h3>
         <p>An HTTP surface plus Lens — a browser view of the ledger, effects, call graph, and hash-chained audit trail for humans reviewing what agents decided.</p>
@@ -111,38 +111,38 @@ import Site from '../layouts/Site.astro';
       <p>Each primitive answers a question an agent needs settled before it reads, writes, or refactors — exposed identically to your tools (MCP) and to you (the <code>asd</code> CLI).</p>
     </div>
     <div class="card-grid cols-2" data-reveal>
-      <div class="card">
+      <div class="card c-purple">
         <div class="slug">ledger</div>
         <h3>Why does this function exist?</h3>
         <p>Hazards, rationale, constraints, and authority — checked into git, surviving renames, file moves, and the original author leaving.</p>
         <pre><span class="p">$</span> asd ledger get payments.chargeCard
 <span class="p">$</span> asd ledger append --kind hazard</pre>
       </div>
-      <div class="card">
+      <div class="card c-green">
         <div class="slug">effects</div>
         <h3>What does it actually touch?</h3>
         <p>A propagated 17-category effect set — <code>io.fs.read</code>, <code>io.db.write</code>, <code>io.net.out</code> — with each effect annotated by where it was declared.</p>
         <pre><span class="p">$</span> asd effects_of processOrder</pre>
       </div>
-      <div class="card">
+      <div class="card c-amber">
         <div class="slug">call_graph</div>
         <h3>What calls what?</h3>
         <p>Callers and callees for any symbol, so an agent can compute the blast radius before it changes a line.</p>
         <pre><span class="p">$</span> asd callers_of billing.computeProration</pre>
       </div>
-      <div class="card">
+      <div class="card c-blue">
         <div class="slug">policy</div>
         <h3>Who's allowed to change it?</h3>
         <p>Declarative gates that decide whether a write requires approval — evaluated on every ledger mutation.</p>
         <pre><span class="p">$</span> asd policy eval billing/*</pre>
       </div>
-      <div class="card">
+      <div class="card c-pink">
         <div class="slug">ratification</div>
         <h3>Who approved this decision?</h3>
         <p>Signed approvals (ed25519) attached to ledger entries, so a decision carries its authority with it.</p>
         <pre><span class="p">$</span> asd ledger approve payments.chargeCard</pre>
       </div>
-      <div class="card">
+      <div class="card c-cyan">
         <div class="slug">audit</div>
         <h3>What happened, in order?</h3>
         <p>A tamper-evident, hash-chained log of every ledger mutation and policy decision — replayable and independently verifiable.</p>
