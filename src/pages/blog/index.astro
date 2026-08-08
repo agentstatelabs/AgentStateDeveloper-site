@@ -1,0 +1,91 @@
+---
+import Site from '../../layouts/Site.astro';
+import { getCollection } from 'astro:content';
+
+// All articles, newest first.
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+// Build-time "now" — the weekly CI job re-runs this so the static HTML
+// (what crawlers and no-JS visitors see) reflects everything published as of
+// the build date. Client-side JS then reveals any article whose date has
+// passed since the last build.
+const buildNow = new Date();
+const fmt = (d) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+
+const rows = posts.map((p) => ({
+  id: p.id,
+  color: p.data.color,
+  title: p.data.title,
+  description: p.data.description,
+  author: p.data.author,
+  iso: p.data.date.toISOString(),
+  when: fmt(p.data.date),
+  published: p.data.date <= buildNow,
+}));
+const anyPublished = rows.some((r) => r.published);
+---
+<Site
+  active="blog"
+  title="Blog — AgentStateDeveloper"
+  description="Notes on code-level context, effects, and audit for agent-authored code."
+  url="https://agentstatedeveloper.dev/blog/"
+>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot">●</span> Blog //</span>
+    <h1>Notes from the <span style="color:var(--accent-bright)">overlay</span>.</h1>
+    <p class="lead">Writing on code-level context, effect propagation, and keeping agent-authored code accountable. A new post lands each week.</p>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="wrap">
+    <div class="blog-list" data-reveal id="blog-list">
+      {rows.map((r) => (
+        <a
+          class={`post c-${r.color}`}
+          href={`/blog/${r.id}/`}
+          data-date={r.iso}
+          style={r.published ? '' : 'display:none'}
+        >
+          <div class="meta"><span class="dot">●</span> {r.when} · {r.author}</div>
+          <h3>{r.title}</h3>
+          <p>{r.description}</p>
+          <span class="more">Read more →</span>
+        </a>
+      ))}
+    </div>
+
+    <div class="empty-note" id="blog-empty" style={anyPublished ? 'display:none' : ''}>
+      <div class="big">No posts yet — the first one lands soon.</div>
+      <p style="margin-bottom:18px">The launch series is scheduled and on its way. Until the first post is live, the docs are the best place to go deep.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn btn-primary" href="/guides/introduction/">Read the docs →</a>
+        <a class="btn btn-secondary" href="https://github.com/agentstatelabs/AgentStateDeveloper" target="_blank">Follow on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  // Reveal any article whose publish date has passed since the last build,
+  // and hide the empty-state once at least one post is visible.
+  (function () {
+    var now = Date.now();
+    var rows = document.querySelectorAll('#blog-list .post');
+    var visible = 0;
+    rows.forEach(function (r) {
+      var d = Date.parse(r.getAttribute('data-date'));
+      if (!isNaN(d) && d <= now) { r.style.display = ''; visible++; }
+      else { r.style.display = 'none'; }
+    });
+    var empty = document.getElementById('blog-empty');
+    if (empty) empty.style.display = visible ? 'none' : '';
+  })();
+</script>
+
+</Site>
