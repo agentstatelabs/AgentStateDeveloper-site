@@ -195,19 +195,24 @@ const nav = [
     .pairs .integ .row .v { color: var(--text-muted); font-size: 12px; }
     @media (max-width: 880px) { .pairs { grid-template-columns: 1fr; padding: 26px; } }
 
-    /* Editions — matched to ctxone.com (flag ribbon, price sublabel, arrow CTA) */
+    /* Editions — matched to ctxone.com: per-tier color, larger type, button CTAs */
     .editions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
-    .edition { position: relative; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 14px; padding: 30px 26px; display: flex; flex-direction: column; }
-    .edition.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-glow), 0 12px 40px var(--accent-glow); }
-    .edition .flag { position: absolute; top: -11px; left: 26px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; color: #fff; background: var(--accent); padding: 4px 10px; border-radius: 20px; }
-    .edition .tier { font-family: var(--mono); font-size: 13px; letter-spacing: 1.5px; color: var(--accent-bright); text-transform: uppercase; font-weight: 600; }
-    .edition .price { font-size: 18px; font-weight: 700; color: var(--text-primary); margin: 12px 0 12px; }
-    .edition .desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
-    .edition ul { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 24px; }
-    .edition li { font-size: 13.5px; color: var(--text-secondary); display: flex; gap: 10px; line-height: 1.5; }
-    .edition li::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; }
-    .edition .cta { margin-top: auto; font-weight: 600; font-size: 14px; color: var(--accent-bright); display: inline-flex; align-items: center; gap: 6px; }
-    .edition .cta:hover { gap: 10px; filter: none; }
+    .edition { --tier: var(--accent-bright); --tier-soft: rgba(167,139,250,0.12); position: relative; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 14px; padding: 32px 28px; display: flex; flex-direction: column; }
+    .edition.oss { --tier: #34d399; --tier-soft: rgba(52,211,153,0.12); }
+    .edition.team { --tier: var(--accent-bright); --tier-soft: rgba(167,139,250,0.14); }
+    .edition.enterprise { --tier: #f5a524; --tier-soft: rgba(245,165,36,0.12); }
+    .edition.featured { border-color: var(--tier); box-shadow: 0 0 0 1px var(--tier-soft), 0 12px 40px var(--tier-soft); }
+    .edition .flag { position: absolute; top: -12px; left: 28px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; color: #0a0a14; background: var(--tier); padding: 5px 11px; border-radius: 20px; }
+    .edition .tier { font-size: 30px; font-weight: 800; letter-spacing: -0.8px; color: var(--text-primary); line-height: 1; }
+    .edition .price { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--tier); margin: 12px 0 16px; }
+    .edition .desc { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .edition ul { list-style: none; display: flex; flex-direction: column; gap: 13px; margin-bottom: 26px; }
+    .edition li { font-size: 15px; color: var(--text-secondary); display: flex; gap: 11px; line-height: 1.5; }
+    .edition li::before { content: '→'; color: var(--tier); font-weight: 700; flex-shrink: 0; }
+    .edition .cta { margin-top: auto; font-weight: 700; font-size: 15px; color: var(--tier); border: 1px solid var(--tier); border-radius: var(--radius-sm); padding: 13px 18px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+    .edition .cta:hover { background: var(--tier-soft); filter: none; }
+    .edition.featured .cta { background: var(--tier); color: #0a0a14; }
+    .edition.featured .cta:hover { background: var(--tier); filter: brightness(1.1); }
     @media (max-width: 900px) { .editions { grid-template-columns: 1fr; } }
 
     /* Prose (content pages) */
