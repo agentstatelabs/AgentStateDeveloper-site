@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Weekly rebuild so scheduled blog posts are "released" as their publish date
+  # passes: the build re-evaluates each article's date against the build time,
+  # so newly-due posts appear in the static HTML (and sitemap) without a commit.
+  # Mondays 08:00 UTC.
+  schedule:
+    - cron: '0 8 * * 1'
 
 permissions:
   contents: read

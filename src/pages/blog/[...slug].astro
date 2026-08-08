@@ -1,0 +1,40 @@
+---
+import Site from '../../layouts/Site.astro';
+import { getCollection, render } from 'astro:content';
+
+// Build a page for every article. Visibility on the index is date-gated
+// (client-side + weekly build), but the individual pages always exist so a
+// revealed link never 404s.
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const fmt = (d) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+<Site
+  active="blog"
+  title={`${entry.data.title} — AgentStateDeveloper`}
+  description={entry.data.description}
+  url={`https://agentstatedeveloper.dev/blog/${entry.id}/`}
+>
+
+<section class="page-hero" style={`--c: var(--accent-bright)`}>
+  <div class={`wrap article c-${entry.data.color}`} style={`--c: ${{
+    purple:'#a78bfa', green:'#34d399', amber:'#f5a524', blue:'#38bdf8', pink:'#f472b6', cyan:'#22d3ee'
+  }[entry.data.color]}`}>
+    <a class="a-back" href="/blog/">← All posts</a>
+    <div class="a-meta"><span class="dot">●</span> {fmt(entry.data.date)} · {entry.data.author}</div>
+    <h1>{entry.data.title}</h1>
+    <p class="a-lead">{entry.data.description}</p>
+    <div class="a-rule"></div>
+    <div class="a-body">
+      <Content />
+    </div>
+  </div>
+</section>
+
+</Site>
