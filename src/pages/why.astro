@@ -1,0 +1,75 @@
+---
+import Site from '../layouts/Site.astro';
+---
+<Site
+  active="why"
+  title="Why AgentStateDeveloper — the case for a code-context overlay"
+  description="Coding agents write code at human-equivalent rates. The bottleneck is no longer throughput — it's knowing what an agent decided, what it can touch, and who approved it."
+  url="https://agentstatedeveloper.dev/why/"
+>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot">●</span> Why ASD //</span>
+    <h1>The diff tells you <span style="color:var(--accent-bright)">what</span> changed. Not why, what it touches, or who approved it.</h1>
+    <p class="lead">Coding agents now write, refactor, and review code at human-equivalent rates. The next bottleneck isn't throughput — it's <strong>the context that never made it into the code</strong>. ASD records that context at the symbol level, in a sidecar that travels with the repo.</p>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="wrap">
+    <div class="prose" data-reveal>
+      <h2>The problem</h2>
+      <p>When an agent writes a function, the reasoning behind it lives everywhere except the code: a Slack thread, a PR description, the model's context window for exactly one session. None of that survives a rename, a file move, or the original author leaving. The next agent — or the next human — inherits the code and none of the decisions.</p>
+      <blockquote>The diff alone doesn't answer <em>what an agent already decided</em>, <em>what it's allowed to touch</em>, or <em>who approved it</em>.</blockquote>
+      <p>As more of a codebase is authored by agents, the gap widens. Agents are fast at producing code and blind to the accumulated intent around it. They re-derive decisions that were already settled, refactor patterns that were load-bearing, and touch code paths no one meant them to.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">Three questions //</span>
+      <h2>What ASD answers before a line changes.</h2>
+      <p>Each maps to a primitive that lives in the repo and is queryable from the CLI, MCP, and HTTP.</p>
+    </div>
+    <div class="pillars" data-reveal>
+      <div class="pillar">
+        <div class="num">01 // STATEFUL</div>
+        <h3>Why does this exist?</h3>
+        <p>The reasoning behind a function evaporates between sessions. The next agent asks the same question you already answered and re-derives the same decision.</p>
+        <p class="answer"><strong>ASD remembers.</strong> A decision ledger attaches hazards, rationale, and constraints to each symbol — append-only, checked into git, surviving the rename and the file move.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">02 // SCOPED</div>
+        <h3>What does it touch?</h3>
+        <p>Before an agent refactors, it needs the blast radius: disk, database, network — including transitively, through everything the symbol calls.</p>
+        <p class="answer"><strong>ASD propagates.</strong> 17 effect categories declared per symbol and pushed through the call graph, so <code>effects_of</code> returns the full set with provenance — declared vs. transitive.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">03 // ACCOUNTABLE</div>
+        <h3>Who approved it?</h3>
+        <p>An agent edited a file last week citing a policy nobody remembers. Did it hallucinate the rule? Nobody can check. The decision is orphaned.</p>
+        <p class="answer"><strong>ASD is auditable.</strong> Policy gates decide what needs sign-off; ratification attaches signed approvals; a hash-chained audit log records every mutation, replayable and verifiable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="prose" data-reveal>
+      <h2>Not a linter. Not code search.</h2>
+      <p>ASD is a <strong>code-level overlay</strong> — the layer agents query before they read, write, or refactor. Linters check style; ASD records <em>decisions</em>. <code>grep</code> finds strings; ASD answers <em>what does this touch, who decided this, was it approved</em>.</p>
+      <h2>Why it's a git-native sidecar</h2>
+      <p>The context has to travel with the code or it rots. ASD's committed sidecar lives in <code>.asd/</code> and is checked into git, so every clone carries the same ledger, effects, and call graph. The live index is local; the human-authored subset is mirrored into tracked files by the sidecar. No server to stand up, no database to sync, no telemetry leaving your machine.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="/guides/quickstart/">Get started →</a>
+        <a class="btn btn-secondary" href="/use-cases/">See use cases</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</Site>

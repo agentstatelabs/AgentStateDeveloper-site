@@ -1,0 +1,79 @@
+---
+import Site from '../layouts/Site.astro';
+---
+<Site
+  active="use-cases"
+  title="Use cases — AgentStateDeveloper"
+  description="Where a code-context overlay earns its keep: safe agent refactors, blast-radius checks, change governance, incident forensics, and cross-repo context."
+  url="https://agentstatedeveloper.dev/use-cases/"
+>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot">●</span> Use cases //</span>
+    <h1>Where the overlay <span style="color:var(--accent-bright)">earns its keep</span>.</h1>
+    <p class="lead">The same eight primitives — ledger, effects, call graph, policy, ratification, audit — show up as very different workflows depending on who's asking and why. Here are the ones teams reach for first.</p>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="wrap">
+    <div class="card-grid cols-2" data-reveal>
+      <div class="card">
+        <div class="slug">01 // safe refactor</div>
+        <h3>Give an agent the blast radius before it edits</h3>
+        <p>Before touching a symbol, the agent calls <code>effects_of</code> and <code>callers_of</code> to see what the change reaches — disk, DB, network, and every caller downstream — so it scopes the edit instead of guessing.</p>
+        <pre><span class="p">$</span> asd effects_of processOrder
+<span class="p">$</span> asd callers_of billing.computeProration</pre>
+      </div>
+      <div class="card">
+        <div class="slug">02 // agent onboarding</div>
+        <h3>Bring a fresh session up to speed instantly</h3>
+        <p>A new agent session starts blind. With ASD wired in over MCP, it reads the ledger for the symbols it's about to touch and inherits the decisions, hazards, and constraints the last session recorded.</p>
+        <pre><span class="p">$</span> asd onboard   <span style="color:var(--text-muted)"># index + register MCP</span></pre>
+      </div>
+      <div class="card">
+        <div class="slug">03 // preserve intent</div>
+        <h3>Capture why a function exists — permanently</h3>
+        <p>When an agent makes a non-obvious choice, it appends a decision or hazard to the ledger. The rationale survives the rename, the file move, and the author leaving, because it lives in the sidecar, not a chat log.</p>
+        <pre><span class="p">$</span> asd ledger append --kind hazard \
+    payments.chargeCard</pre>
+      </div>
+      <div class="card">
+        <div class="slug">04 // change governance</div>
+        <h3>Require sign-off on sensitive code</h3>
+        <p>A policy gate says: any agent write to <code>payments.*</code> requires approval. The gate is evaluated on every ledger mutation and emitted to the audit stream, so risky changes can't land unreviewed.</p>
+        <pre><span class="p">$</span> asd policy eval payments/*</pre>
+      </div>
+      <div class="card">
+        <div class="slug">05 // incident forensics</div>
+        <h3>Answer "who broke this?" in minutes</h3>
+        <p>When a regression lands, tail the hash-chained audit log for the affected subtree. Every ledger mutation and policy decision is there in order — tamper-evident, replayable, independently verifiable.</p>
+        <pre><span class="p">$</span> asd audit tail --path billing/*
+<span class="p">$</span> asd audit verify</pre>
+      </div>
+      <div class="card">
+        <div class="slug">06 // cross-repo context</div>
+        <h3>Share code context across the team, with CTXone</h3>
+        <p>Per-developer ASD becomes team-wide when wired into the <a href="https://ctxone.com" target="_blank">CTXone</a> Hub: <code>code_search</code>, <code>code_read</code>, and <code>callers_of</code> are served next to shared memory and plans, over one MCP connection.</p>
+        <pre><span class="p">$</span> ctx bootstrap   <span style="color:var(--text-muted)"># offers to add asd</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap" style="text-align:center">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">Get started //</span>
+      <h2>Index your repo in 60 seconds.</h2>
+      <p>One command installs the binaries, indexes the repo, and registers the MCP server for your coding agent.</p>
+    </div>
+    <div data-reveal style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn btn-primary" href="/guides/quickstart/">Quick Start →</a>
+      <a class="btn btn-secondary" href="/why/">Why ASD</a>
+    </div>
+  </div>
+</section>
+
+</Site>

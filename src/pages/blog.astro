@@ -1,0 +1,34 @@
+---
+import Site from '../layouts/Site.astro';
+---
+<Site
+  active="blog"
+  title="Blog — AgentStateDeveloper"
+  description="Notes on code-level context, effects, and audit for agent-authored code."
+  url="https://agentstatedeveloper.dev/blog/"
+>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot">●</span> Blog //</span>
+    <h1>Notes from the <span style="color:var(--accent-bright)">overlay</span>.</h1>
+    <p class="lead">Writing on code-level context, effect propagation, and keeping agent-authored code accountable. The first posts are on the way.</p>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="wrap">
+    <div class="blog-list" data-reveal>
+      <div class="empty-note">
+        <div class="big">No posts yet — but the ideas are queued.</div>
+        <p style="margin-bottom:18px">We're drafting the first entries: why the diff isn't enough for agents, how transitive effect propagation works, and what a hash-chained audit trail buys you in an incident. Until they land, the docs are the best place to go deep.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a class="btn btn-primary" href="/guides/introduction/">Read the docs →</a>
+          <a class="btn btn-secondary" href="https://github.com/agentstatelabs/AgentStateDeveloper" target="_blank">Follow on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</Site>
