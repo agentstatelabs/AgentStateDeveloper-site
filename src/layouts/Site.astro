@@ -169,13 +169,22 @@ const nav = [
 
     /* Numbered pillars (moments) */
     .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .pillar { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; }
-    .pillar .num { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--accent-bright); margin-bottom: 14px; }
+    .pillar { --c: var(--accent-bright); background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
+    .pillar::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--c); transition: height 0.25s ease; }
+    .pillar:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--border)); transform: translateY(-2px); }
+    .pillar:hover::before { height: 100%; }
+    .pillar.c-purple { --c: #a78bfa; }
+    .pillar.c-green  { --c: #34d399; }
+    .pillar.c-amber  { --c: #f5a524; }
+    .pillar.c-blue   { --c: #38bdf8; }
+    .pillar.c-pink   { --c: #f472b6; }
+    .pillar.c-cyan   { --c: #22d3ee; }
+    .pillar .num { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--c); margin-bottom: 14px; }
     .pillar h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
     .pillar p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 12px; }
     .pillar .answer { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
-    .pillar .answer strong { color: var(--accent-bright); }
-    .pillar code { color: var(--accent-bright); }
+    .pillar .answer strong { color: var(--c); }
+    .pillar code { color: var(--c); }
     @media (max-width: 900px) { .pillars { grid-template-columns: 1fr; } }
 
     /* Mockups (reused for the moments) */

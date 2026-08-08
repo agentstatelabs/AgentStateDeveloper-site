@@ -35,19 +35,19 @@ import Site from '../layouts/Site.astro';
       <p>Each maps to a primitive that lives in the repo and is queryable from the CLI, MCP, and HTTP.</p>
     </div>
     <div class="pillars" data-reveal>
-      <div class="pillar">
+      <div class="pillar c-purple">
         <div class="num">01 // STATEFUL</div>
         <h3>Why does this exist?</h3>
         <p>The reasoning behind a function evaporates between sessions. The next agent asks the same question you already answered and re-derives the same decision.</p>
         <p class="answer"><strong>ASD remembers.</strong> A decision ledger attaches hazards, rationale, and constraints to each symbol — append-only, checked into git, surviving the rename and the file move.</p>
       </div>
-      <div class="pillar">
+      <div class="pillar c-green">
         <div class="num">02 // SCOPED</div>
         <h3>What does it touch?</h3>
         <p>Before an agent refactors, it needs the blast radius: disk, database, network — including transitively, through everything the symbol calls.</p>
         <p class="answer"><strong>ASD propagates.</strong> 17 effect categories declared per symbol and pushed through the call graph, so <code>effects_of</code> returns the full set with provenance — declared vs. transitive.</p>
       </div>
-      <div class="pillar">
+      <div class="pillar c-amber">
         <div class="num">03 // ACCOUNTABLE</div>
         <h3>Who approved it?</h3>
         <p>An agent edited a file last week citing a policy nobody remembers. Did it hallucinate the rule? Nobody can check. The decision is orphaned.</p>
