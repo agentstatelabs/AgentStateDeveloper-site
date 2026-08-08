@@ -19,40 +19,40 @@ import Site from '../layouts/Site.astro';
 <section class="section tight">
   <div class="wrap">
     <div class="card-grid cols-2" data-reveal>
-      <div class="card">
+      <div class="card c-green">
         <div class="slug">01 // safe refactor</div>
         <h3>Give an agent the blast radius before it edits</h3>
         <p>Before touching a symbol, the agent calls <code>effects_of</code> and <code>callers_of</code> to see what the change reaches — disk, DB, network, and every caller downstream — so it scopes the edit instead of guessing.</p>
         <pre><span class="p">$</span> asd effects_of processOrder
 <span class="p">$</span> asd callers_of billing.computeProration</pre>
       </div>
-      <div class="card">
+      <div class="card c-purple">
         <div class="slug">02 // agent onboarding</div>
         <h3>Bring a fresh session up to speed instantly</h3>
         <p>A new agent session starts blind. With ASD wired in over MCP, it reads the ledger for the symbols it's about to touch and inherits the decisions, hazards, and constraints the last session recorded.</p>
         <pre><span class="p">$</span> asd onboard   <span style="color:var(--text-muted)"># index + register MCP</span></pre>
       </div>
-      <div class="card">
+      <div class="card c-amber">
         <div class="slug">03 // preserve intent</div>
         <h3>Capture why a function exists — permanently</h3>
         <p>When an agent makes a non-obvious choice, it appends a decision or hazard to the ledger. The rationale survives the rename, the file move, and the author leaving, because it lives in the sidecar, not a chat log.</p>
         <pre><span class="p">$</span> asd ledger append --kind hazard \
     payments.chargeCard</pre>
       </div>
-      <div class="card">
+      <div class="card c-blue">
         <div class="slug">04 // change governance</div>
         <h3>Require sign-off on sensitive code</h3>
         <p>A policy gate says: any agent write to <code>payments.*</code> requires approval. The gate is evaluated on every ledger mutation and emitted to the audit stream, so risky changes can't land unreviewed.</p>
         <pre><span class="p">$</span> asd policy eval payments/*</pre>
       </div>
-      <div class="card">
+      <div class="card c-pink">
         <div class="slug">05 // incident forensics</div>
         <h3>Answer "who broke this?" in minutes</h3>
         <p>When a regression lands, tail the hash-chained audit log for the affected subtree. Every ledger mutation and policy decision is there in order — tamper-evident, replayable, independently verifiable.</p>
         <pre><span class="p">$</span> asd audit tail --path billing/*
 <span class="p">$</span> asd audit verify</pre>
       </div>
-      <div class="card">
+      <div class="card c-cyan">
         <div class="slug">06 // cross-repo context</div>
         <h3>Share code context across the team, with CTXone</h3>
         <p>Per-developer ASD becomes team-wide when wired into the <a href="https://ctxone.com" target="_blank">CTXone</a> Hub: <code>code_search</code>, <code>code_read</code>, and <code>callers_of</code> are served next to shared memory and plans, over one MCP connection.</p>

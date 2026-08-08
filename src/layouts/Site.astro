@@ -148,14 +148,23 @@ const nav = [
     .card-grid { display: grid; gap: 16px; }
     .card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
     .card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
-    .card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: border-color 0.2s, transform 0.2s; }
-    .card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
-    .card .slug { font-family: var(--mono); font-size: 12px; color: var(--accent-bright); margin-bottom: 12px; }
+    .card { --c: var(--accent-bright); background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: border-color 0.2s, transform 0.2s; position: relative; overflow: hidden; }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--c); transition: height 0.25s ease; }
+    .card:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--border)); transform: translateY(-2px); }
+    .card:hover::before { height: 100%; }
+    /* Per-card accent colors — break up the uniform purple */
+    .card.c-purple { --c: #a78bfa; }
+    .card.c-green  { --c: #34d399; }
+    .card.c-amber  { --c: #f5a524; }
+    .card.c-blue   { --c: #38bdf8; }
+    .card.c-pink   { --c: #f472b6; }
+    .card.c-cyan   { --c: #22d3ee; }
+    .card .slug { font-family: var(--mono); font-size: 12px; color: var(--c); margin-bottom: 12px; }
     .card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
     .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
     .card p + p { margin-top: 10px; }
     .card pre { margin-top: 14px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; font-family: var(--mono); font-size: 11.5px; line-height: 1.7; color: var(--text-secondary); overflow-x: auto; }
-    .card pre .p { color: var(--accent); }
+    .card pre .p { color: var(--c); }
     @media (max-width: 900px) { .card-grid.cols-3 { grid-template-columns: 1fr; } .card-grid.cols-2 { grid-template-columns: 1fr; } }
 
     /* Numbered pillars (moments) */
