@@ -1,5 +1,6 @@
 ---
 // Custom landing page — agentstatedeveloper.dev
+// Layout/structure modeled on ctxone.com; ASD purple color scheme retained.
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +8,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AgentStateDeveloper — Code-level context and audit overlay for agent-authored code</title>
-  <meta name="description" content="Decision ledger, effect declarations, and call graph for every function — queryable by agents, checked into git." />
+  <meta name="description" content="Decision ledger, effect declarations, and call graph for every function — queryable by agents over MCP, checked into git." />
   <meta property="og:title" content="AgentStateDeveloper" />
   <meta property="og:description" content="Code-level context and audit overlay for agent-authored code." />
   <meta property="og:url" content="https://agentstatedeveloper.dev" />
@@ -15,153 +16,194 @@
   <style>
     :root {
       --accent: #8b5cf6;
+      --accent-bright: #a78bfa;
       --accent-glow: #8b5cf633;
       --accent-subtle: #8b5cf618;
       --cyan: #a78bfa;
       --bg-primary: #0a0a14;
       --bg-secondary: #14101f;
       --bg-tertiary: #1f1a2e;
-      --border: #2e1065;
-      --text-primary: #e0e0e0;
-      --text-secondary: #999;
-      --text-muted: #666;
+      --border: #2a2140;
+      --border-strong: #3a2d5c;
+      --text-primary: #e8e6f0;
+      --text-secondary: #9b93b3;
+      --text-muted: #6b6485;
       --success: #00ff88;
       --warning: #f59e0b;
       --radius: 12px;
       --radius-sm: 8px;
+      --mono: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+      --maxw: 1120px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { filter: brightness(1.2); }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-    code { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 0.9em; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent-bright); text-decoration: none; }
+    a:hover { filter: brightness(1.15); }
+    code { font-family: var(--mono); font-size: 0.9em; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+    .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-bright); font-weight: 600; }
+    .eyebrow .dot { color: var(--accent); }
 
     /* Nav */
-    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 56px; display: flex; align-items: center; justify-content: center; background: rgba(15,10,26,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); opacity: 0; transform: translateY(-100%); transition: opacity 0.3s, transform 0.3s; pointer-events: none; }
-    .nav.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
-    .nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; width: 100%; padding: 0 24px; }
-    .nav-logo { font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #6d28d9, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .nav-links { display: flex; gap: 24px; }
-    .nav-links a { color: var(--text-secondary); font-size: 13px; font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--accent); filter: none; }
+    .nav { position: sticky; top: 0; z-index: 100; height: 60px; display: flex; align-items: center; background: rgba(10,10,20,0.72); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: var(--maxw); width: 100%; margin: 0 auto; padding: 0 24px; }
+    .nav-logo { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; color: var(--text-primary); }
+    .nav-logo .glyph { width: 15px; height: 15px; border-radius: 4px; background: linear-gradient(135deg, #6d28d9, #a78bfa); box-shadow: 0 0 12px var(--accent-glow); }
+    .nav-links { display: flex; align-items: center; gap: 26px; }
+    .nav-links a { color: var(--text-secondary); font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-primary); filter: none; }
+    .nav-gh { border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 7px 14px !important; color: var(--text-primary) !important; }
+    .nav-gh:hover { border-color: var(--accent); }
+    @media (max-width: 820px) { .nav-links a:not(.nav-gh) { display: none; } }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { filter: brightness(1.12); transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
+    .btn-secondary { background: transparent; color: var(--text-primary); border-color: var(--border-strong); }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent-bright); }
 
     /* Hero */
-    .hero { position: relative; text-align: center; padding: 120px 24px 80px; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse at 30% 50%, rgba(139,92,246,0.15), transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(109,40,217,0.1), transparent 60%); background-size: 200% 200%; animation: gradientShift 8s ease infinite; }
-    .hero > * { position: relative; z-index: 1; }
-    .hero h1 { font-size: 52px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; background: linear-gradient(135deg, #6d28d9, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero .tagline { font-size: 18px; color: var(--text-secondary); max-width: 720px; margin: 0 auto 8px; line-height: 1.6; }
-    .hero .tagline em { color: var(--text-primary); font-style: normal; font-weight: 600; }
-    .hero .subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; font-family: 'SF Mono', Menlo, Consolas, monospace; }
-    .badge { display: inline-block; font-size: 11px; color: var(--accent); background: var(--accent-subtle); border: 1px solid var(--accent); padding: 3px 10px; border-radius: 20px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 20px; }
-    .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 4px 16px var(--accent-glow); }
-    .btn-secondary { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
-    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .hero { position: relative; padding: 88px 0 72px; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 60% 50% at 20% 0%, rgba(139,92,246,0.18), transparent 65%), radial-gradient(ellipse 50% 40% at 85% 10%, rgba(109,40,217,0.12), transparent 60%); }
+    .hero .wrap { position: relative; z-index: 1; }
+    .hero h1 { font-size: 60px; line-height: 1.04; font-weight: 800; letter-spacing: -1.5px; margin: 20px 0 24px; max-width: 780px; }
+    .hero h1 .accent { color: var(--accent-bright); }
+    .hero .lead { font-size: 19px; color: var(--text-primary); max-width: 640px; line-height: 1.6; margin-bottom: 16px; }
+    .hero .lead strong { font-weight: 700; }
+    .hero .sub { font-size: 16px; color: var(--text-secondary); max-width: 640px; line-height: 1.65; margin-bottom: 32px; }
+    .hero .sub .kw { color: var(--accent-bright); font-weight: 600; }
+    .hero .sub .kw.warn { color: var(--warning); }
+
+    /* Install card */
+    .install { background: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary)); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 20px; max-width: 720px; box-shadow: 0 8px 40px rgba(0,0,0,0.35); }
+    .install-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .install-head .bolt { font-size: 16px; }
+    .install-head .t { font-weight: 700; font-size: 15px; }
+    .install-head .spacer { flex: 1; }
+    .install-head .mini { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--text-muted); border: 1px solid var(--border); border-radius: 5px; padding: 4px 9px; cursor: pointer; transition: all 0.2s; }
+    .install-head .mini:hover { border-color: var(--accent); color: var(--accent-bright); }
+    .install pre { background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; color: var(--text-secondary); overflow-x: auto; white-space: pre-wrap; }
+    .install pre .c { color: var(--accent-bright); }
+    .install-or { font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; color: var(--text-muted); margin: 18px 0 10px; }
+    .tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .tab { font-size: 12px; font-weight: 600; padding: 7px 13px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; background: transparent; }
+    .tab .os { display: block; font-size: 9px; font-weight: 500; color: var(--text-muted); margin-top: 1px; }
+    .tab.active { border-color: var(--accent); color: var(--accent-bright); background: var(--accent-subtle); }
+    .cmd-row { display: flex; align-items: center; gap: 10px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 14px; }
+    .cmd-row .dollar { color: var(--accent); font-family: var(--mono); }
+    .cmd-row code { flex: 1; color: var(--text-primary); font-size: 12.5px; overflow-x: auto; white-space: nowrap; }
+    .cmd-row .copy { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--text-muted); cursor: pointer; }
+    .cmd-row .copy:hover { color: var(--accent-bright); }
+
+    .runs-on { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
+    .chip { font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); }
+
+    .hero-cta { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .feat-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+    .feat { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-secondary); }
+    .feat::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
+    /* Stat band */
+    .stats { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); max-width: var(--maxw); margin: 0 auto; }
+    .stat { padding: 32px 24px; text-align: center; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat .n { font-size: 40px; font-weight: 800; color: var(--accent-bright); letter-spacing: -1px; }
+    .stat .l { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+    @media (max-width: 720px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .stat:nth-child(2) { border-right: none; } .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--border); } }
 
     /* Sections */
-    .section { padding: 80px 24px; }
-    .section-label { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 8px; text-align: center; }
-    .section-title { font-size: 32px; font-weight: 700; text-align: center; margin-bottom: 16px; }
-    .section-subtitle { font-size: 16px; color: var(--text-secondary); text-align: center; max-width: 640px; margin: 0 auto 48px; line-height: 1.6; }
+    .section { padding: 84px 0; }
+    .section-head { max-width: 720px; margin-bottom: 44px; }
+    .section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+    .section-head h2 { font-size: 34px; font-weight: 800; letter-spacing: -0.8px; margin-top: 12px; }
+    .section-head p { font-size: 16px; color: var(--text-secondary); margin-top: 12px; line-height: 1.65; }
 
-    /* Story blocks */
-    .story { max-width: 960px; margin: 0 auto 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-    .story.reverse { direction: rtl; }
-    .story.reverse > * { direction: ltr; }
-    .story-text h3 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
-    .story-text .story-context { font-size: 13px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .story-text p { font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
-    .story-text .punchline { color: var(--text-primary); font-weight: 600; }
+    /* Card grid (architecture / capabilities) */
+    .card-grid { display: grid; gap: 16px; }
+    .card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: border-color 0.2s, transform 0.2s; }
+    .card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+    .card .slug { font-family: var(--mono); font-size: 12px; color: var(--accent-bright); margin-bottom: 12px; }
+    .card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    .card pre { margin-top: 14px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; font-family: var(--mono); font-size: 11.5px; line-height: 1.7; color: var(--text-secondary); overflow-x: auto; }
+    .card pre .p { color: var(--accent); }
+    @media (max-width: 900px) { .card-grid.cols-3 { grid-template-columns: 1fr; } .card-grid.cols-2 { grid-template-columns: 1fr; } }
 
-    /* Mockup panels */
-    .mockup { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); max-width: 440px; }
+    /* Numbered pillars (moments) */
+    .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pillar { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; }
+    .pillar .num { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--accent-bright); margin-bottom: 14px; }
+    .pillar h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
+    .pillar p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 12px; }
+    .pillar .answer { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
+    .pillar .answer strong { color: var(--accent-bright); }
+    .pillar code { color: var(--accent-bright); }
+    @media (max-width: 900px) { .pillars { grid-template-columns: 1fr; } }
+
+    /* Mockups (reused for the moments) */
+    .mockup { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
     .mockup-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-    .mockup-header .icon { font-size: 16px; }
-    .mockup-header .title { font-size: 12px; font-weight: 600; color: var(--text-primary); }
-    .mockup-header .badge-sm { font-size: 9px; color: var(--accent); background: var(--accent-subtle); padding: 1px 6px; border-radius: 10px; margin-left: auto; }
-
-    .blame-output { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 11px; line-height: 1.8; }
+    .mockup-header .title { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .mockup-header .badge-sm { font-size: 9px; color: var(--accent-bright); background: var(--accent-subtle); padding: 2px 7px; border-radius: 10px; margin-left: auto; letter-spacing: 0.5px; }
+    .blame-output { font-family: var(--mono); font-size: 11px; line-height: 1.85; }
     .blame-output .label { color: var(--text-muted); }
     .blame-output .value { color: var(--text-primary); }
-    .blame-output .agent { color: var(--accent); }
-    .blame-output .conf { color: var(--success); }
+    .blame-output .agent { color: var(--accent-bright); }
     .blame-output .time { color: var(--cyan); }
     .blame-output .reason { color: var(--warning); font-style: italic; }
+    .moment { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin-bottom: 28px; }
+    .moment:nth-child(even) .moment-text { order: 2; }
+    @media (max-width: 880px) { .moment { grid-template-columns: 1fr; gap: 20px; } .moment:nth-child(even) .moment-text { order: 0; } }
 
-    .query-line { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 11px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: 8px; color: var(--cyan); }
-    .query-result { font-size: 12px; color: var(--text-secondary); padding: 6px 0; border-bottom: 1px solid var(--border); }
-    .query-result:last-child { border-bottom: none; }
-    .query-result .qr-cat { font-size: 9px; font-weight: 700; color: var(--accent); background: var(--accent-subtle); padding: 1px 5px; border-radius: 3px; text-transform: uppercase; }
-    .query-result .qr-agent { font-size: 10px; color: var(--text-muted); }
-    .query-result .qr-conf { font-size: 10px; color: var(--success); font-weight: 600; }
-    .query-result .qr-desc { margin-top: 2px; font-size: 11px; color: var(--text-primary); }
+    /* Pairs-with */
+    .pairs { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px; }
+    .pairs h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin: 10px 0 14px; }
+    .pairs p { color: var(--text-secondary); line-height: 1.65; margin-bottom: 12px; }
+    .pairs .integ { background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; }
+    .pairs .integ .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 13px; }
+    .pairs .integ .row:last-child { border-bottom: none; }
+    .pairs .integ .row .k { font-family: var(--mono); color: var(--accent-bright); }
+    .pairs .integ .row .v { color: var(--text-muted); font-size: 12px; }
+    @media (max-width: 880px) { .pairs { grid-template-columns: 1fr; padding: 26px; } }
 
-    .audit-line { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 10px; padding: 4px 0; border-bottom: 1px dashed var(--border); color: var(--text-secondary); }
-    .audit-line .h { color: var(--accent); }
-    .audit-line .a { color: var(--cyan); }
-    .audit-line .k { color: var(--warning); }
-
-    /* Vision section */
-    .vision-text { max-width: 720px; margin: 0 auto; font-size: 18px; color: var(--text-secondary); line-height: 1.8; text-align: center; font-style: italic; }
-    .vision-text strong { color: var(--text-primary); font-style: normal; }
-
-    /* Commit anatomy */
-    .commit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 900px; margin: 0 auto; }
-    .commit-field { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center; transition: border-color 0.2s; }
-    .commit-field:hover { border-color: var(--accent); }
-    .commit-field .cf-name { font-size: 13px; font-weight: 700; color: var(--accent); font-family: 'SF Mono', Menlo, Consolas, monospace; margin-bottom: 4px; }
-    .commit-field .cf-q { font-size: 12px; color: var(--text-secondary); }
-
-    /* Languages strip */
-    .lang-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
-    .lang-pill { padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid var(--border); color: var(--text-secondary); transition: all 0.2s; }
-    .lang-pill:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* Terminal */
-    .terminal { max-width: 640px; margin: 0 auto; border-radius: var(--radius); background: var(--bg-primary); border: 1px solid var(--border); overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-    .terminal-bar { padding: 10px 14px; display: flex; align-items: center; gap: 8px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
-    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .terminal-dot.red { background: #ff5f57; } .terminal-dot.yellow { background: #febc2e; } .terminal-dot.green { background: #28c840; }
-    .terminal-title { font-size: 11px; color: var(--text-muted); margin-left: 8px; }
-    .terminal-body { padding: 16px; font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 13px; line-height: 1.7; min-height: 180px; }
-    .terminal-body .prompt { color: var(--success); }
-    .terminal-body .cmd { color: var(--cyan); }
-    .terminal-body .output { color: var(--text-muted); }
-    .terminal-body .cursor { display: inline-block; width: 8px; height: 16px; background: var(--text-primary); vertical-align: text-bottom; animation: blink 1s step-end infinite; }
+    /* Editions */
+    .editions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .edition { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; display: flex; flex-direction: column; }
+    .edition.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-glow), 0 8px 30px var(--accent-glow); }
+    .edition .tier { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--accent-bright); text-transform: uppercase; }
+    .edition .price { font-size: 24px; font-weight: 800; margin: 10px 0 4px; }
+    .edition .who { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .edition ul { list-style: none; display: flex; flex-direction: column; gap: 9px; margin-bottom: 20px; }
+    .edition li { font-size: 13.5px; color: var(--text-secondary); display: flex; gap: 9px; line-height: 1.5; }
+    .edition li::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; }
+    .edition .btn { margin-top: auto; justify-content: center; }
+    @media (max-width: 900px) { .editions { grid-template-columns: 1fr; } }
 
     /* Footer */
-    .footer { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 48px 24px 24px; }
-    .footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 800px; margin: 0 auto 32px; }
-    .footer-col h4 { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-    .footer-col a { display: block; color: var(--text-secondary); font-size: 13px; padding: 3px 0; transition: color 0.2s; }
-    .footer-col a:hover { color: var(--accent); filter: none; }
-    .footer-bottom { text-align: center; font-size: 12px; color: var(--text-muted); padding-top: 24px; border-top: 1px solid var(--border); }
+    .footer { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 52px 0 28px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; max-width: var(--maxw); margin: 0 auto 32px; padding: 0 24px; }
+    .footer-brand .nav-logo { margin-bottom: 12px; }
+    .footer-brand p { font-size: 13px; color: var(--text-muted); line-height: 1.6; max-width: 260px; }
+    .footer-col h4 { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+    .footer-col a { display: block; color: var(--text-secondary); font-size: 13px; padding: 4px 0; }
+    .footer-col a:hover { color: var(--accent-bright); filter: none; }
+    .footer-bottom { text-align: center; font-size: 12px; color: var(--text-muted); padding-top: 24px; border-top: 1px solid var(--border); max-width: var(--maxw); margin: 0 auto; }
+    @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
 
-    [data-reveal] { opacity: 0; transform: translateY(40px); transition: opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); }
-    [data-reveal="left"] { transform: translateX(-40px); }
-    [data-reveal="right"] { transform: translateX(40px); }
+    [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); }
     [data-reveal].revealed { opacity: 1; transform: none; }
 
-    @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-    @keyframes blink { 50% { opacity: 0; } }
-
-    @media (max-width: 900px) {
-      .story { grid-template-columns: 1fr; gap: 24px; }
-      .story.reverse { direction: ltr; }
-      .commit-grid { grid-template-columns: repeat(2, 1fr); max-width: 480px; }
-      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
-    }
-    @media (max-width: 600px) {
-      .hero h1 { font-size: 32px; }
-      .hero .tagline { font-size: 15px; }
-      .section-title { font-size: 24px; }
-      .cta-row { flex-direction: column; align-items: center; }
-      .commit-grid { grid-template-columns: 1fr; max-width: 320px; }
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 38px; }
+      .hero { padding: 56px 0 48px; }
+      .section { padding: 60px 0; }
+      .section-head h2 { font-size: 26px; }
+      .stat .n { font-size: 32px; }
     }
   </style>
 </head>
@@ -169,318 +211,392 @@
 
 <nav class="nav">
   <div class="nav-inner">
-    <span class="nav-logo">AgentStateDeveloper</span>
+    <span class="nav-logo"><span class="glyph"></span>AgentStateDeveloper</span>
     <div class="nav-links">
-      <a href="#stories">Why</a>
-      <a href="#anatomy">How</a>
-      <a href="#start">Get Started</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#editions">Editions</a>
       <a href="/guides/introduction/">Docs</a>
-      <a href="https://github.com/agentstatelabs/AgentStateDeveloper" target="_blank">GitLab</a>
+      <a class="nav-gh" href="https://github.com/agentstatelabs/AgentStateDeveloper" target="_blank">GitHub</a>
     </div>
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <span class="badge">v1.3.1 &middot; BSL 1.1</span>
-  <h1>AgentStateDeveloper</h1>
-  <p class="tagline"><em>Code-level context and audit overlay for agent-authored code</em> &mdash; a decision ledger, an effect declaration, and a call graph for every function, all queryable by the coding agents that write the code, all checked into git.</p>
-  <p class="subtitle">Rust core &middot; 9 languages &middot; 64 MCP tools &middot; Git-native sidecar</p>
-  <div class="cta-row">
-    <a class="btn btn-primary" href="https://github.com/agentstatelabs/AgentStateDeveloper" target="_blank">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.6 9.593l-.033-.086L20.3.98a.851.851 0 00-.336-.405.876.876 0 00-1 .054.875.875 0 00-.29.44L16.47 7.818H7.537L5.328 1.068A.857.857 0 005.038.63a.876.876 0 00-1-.054.871.871 0 00-.336.404L.421 9.502l-.033.086a6.066 6.066 0 002.012 7.01l.012.008.029.022 4.98 3.727 2.462 1.864 1.501 1.134a1.01 1.01 0 001.22 0l1.502-1.134 2.461-1.864 5.012-3.751.013-.01A6.066 6.066 0 0023.6 9.594z"/></svg>
-      View on GitLab
-    </a>
-    <a class="btn btn-secondary" href="/guides/quickstart/">Quick Start</a>
-    <a class="btn btn-secondary" href="/guides/introduction/">Docs</a>
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot">●</span> ASD // the code-context overlay for agents</span>
+    <h1>Your agents write code they don't remember deciding. <span class="accent">ASD gives them the paper trail.</span></h1>
+    <p class="lead">AgentStateDeveloper is a <strong>code-level context and audit overlay</strong> for agent-authored code — a decision ledger, effect declarations, and a call graph for every function, all queryable by the agents that write the code.</p>
+    <p class="sub">Under the hood it's a git-native sidecar that travels with the repo: <span class="kw">why</span> a function exists, <span class="kw">what</span> it's allowed to touch, and <span class="kw warn">who</span> approved the last change — served over MCP. Rust core. 9 languages. Zero telemetry.</p>
+
+    <!-- Install card -->
+    <div class="install">
+      <div class="install-head">
+        <span class="bolt">⚡</span>
+        <span class="t">Let your agent install it</span>
+        <span class="spacer"></span>
+        <span class="mini" id="copy-prompt">COPY PROMPT</span>
+      </div>
+      <pre id="agent-prompt">Set up AgentStateDeveloper for this repository. Run each step, then report back once asd is installed, this repo is indexed, and the MCP server is connected.
+
+<span class="c">1. brew install asd</span>   — install the asd, asd-mcp, and asd-serve binaries
+<span class="c">2. asd onboard</span>        — index the repo and register the MCP server (project-scoped)</pre>
+
+      <div class="install-or">OR INSTALL DIRECTLY</div>
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-cmd="brew tap agentstatelabs/agentstatedeveloper && brew install asd">Homebrew<span class="os">macOS · Linux</span></button>
+        <button class="tab" data-cmd="curl -fsSL https://raw.githubusercontent.com/agentstatelabs/AgentStateDeveloper/main/install.sh | sh">Shell<span class="os">macOS · Linux</span></button>
+        <button class="tab" data-cmd="iwr https://raw.githubusercontent.com/agentstatelabs/AgentStateDeveloper/main/install.ps1 | iex">PowerShell<span class="os">Windows</span></button>
+      </div>
+      <div class="cmd-row">
+        <span class="dollar">$</span>
+        <code id="install-cmd">brew tap agentstatelabs/agentstatedeveloper && brew install asd</code>
+        <span class="copy" id="copy-cmd">COPY</span>
+      </div>
+      <div class="runs-on">
+        RUNS ON
+        <span class="chip">macOS · Apple Silicon</span>
+        <span class="chip">macOS · Intel</span>
+        <span class="chip">Linux</span>
+        <span class="chip">Windows</span>
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="/guides/quickstart/">Get started →</a>
+      <a class="btn btn-secondary" href="https://github.com/agentstatelabs/AgentStateDeveloper" target="_blank">View on GitHub</a>
+    </div>
+
+    <div class="feat-row">
+      <span class="feat">64 MCP tools</span>
+      <span class="feat">Git-native sidecar</span>
+      <span class="feat">9 languages</span>
+      <span class="feat">BSL-1.1 → Apache 2.0</span>
+    </div>
   </div>
 </section>
 
-<section class="section" data-reveal>
-  <div class="container">
-    <p class="vision-text">Coding agents now write, refactor, and review code at human-equivalent rates. The next bottleneck is not throughput &mdash; it is <strong>knowing what an agent already decided, what it's allowed to touch, and who approved it</strong>. AgentStateDeveloper records all of that, at the symbol level, in a sidecar that travels with the repo.</p>
+<!-- STAT BAND -->
+<div class="stats">
+  <div class="stats-grid">
+    <div class="stat"><div class="n">64</div><div class="l">MCP tools</div></div>
+    <div class="stat"><div class="n">8</div><div class="l">Primitives</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">Surfaces</div></div>
+    <div class="stat"><div class="n">9</div><div class="l">Languages</div></div>
+  </div>
+</div>
+
+<!-- ARCHITECTURE -->
+<section class="section" id="architecture">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Architecture //</span>
+      <h2>One overlay. Three surfaces.</h2>
+      <p>ASD isn't a library you import — it's a sidecar that lives in <code>.asd/</code>, travels with every clone, and exposes the same graph to your shell, your coding agents, and the browser.</p>
+    </div>
+    <div class="card-grid cols-3" data-reveal>
+      <div class="card">
+        <div class="slug">cli/</div>
+        <h3>asd</h3>
+        <p>Everything the agents can do, you can do from a shell: index, read a symbol, query effects, append and ratify ledger entries, tail the audit log.</p>
+        <pre><span class="p">$</span> asd read payments.chargeCard
+<span class="p">$</span> asd effects_of processOrder</pre>
+      </div>
+      <div class="card">
+        <div class="slug">mcp/</div>
+        <h3>asd-mcp</h3>
+        <p>A stdio MCP server exposing 64 tools to Claude Code, Cursor, Codex, and Gemini — code search, call graph, effects, and ledger, right where the agent works.</p>
+        <pre><span class="p">$</span> asd onboard   <span style="color:var(--text-muted)"># registers MCP</span></pre>
+      </div>
+      <div class="card">
+        <div class="slug">http/</div>
+        <h3>asd-serve</h3>
+        <p>An HTTP surface plus Lens — a browser view of the ledger, effects, call graph, and hash-chained audit trail for humans reviewing what agents decided.</p>
+        <pre><span class="p">$</span> asd-serve --port 7777</pre>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="section" id="stories">
-  <div class="container">
-    <p class="section-label">Why this matters</p>
-    <h2 class="section-title">Three moments your agents already need this</h2>
-    <p class="section-subtitle">These aren't hypotheticals. They're what happens to every team that lets agents touch real code.</p>
+<!-- CAPABILITIES -->
+<section class="section" id="capabilities">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Capabilities //</span>
+      <h2>Eight primitives, one sidecar.</h2>
+      <p>Each primitive answers a question an agent needs settled before it reads, writes, or refactors — exposed identically to your tools (MCP) and to you (the <code>asd</code> CLI).</p>
+    </div>
+    <div class="card-grid cols-2" data-reveal>
+      <div class="card">
+        <div class="slug">ledger</div>
+        <h3>Why does this function exist?</h3>
+        <p>Hazards, rationale, constraints, and authority — checked into git, surviving renames, file moves, and the original author leaving.</p>
+        <pre><span class="p">$</span> asd ledger get payments.chargeCard
+<span class="p">$</span> asd ledger append --kind hazard</pre>
+      </div>
+      <div class="card">
+        <div class="slug">effects</div>
+        <h3>What does it actually touch?</h3>
+        <p>A propagated 17-category effect set — <code>io.fs.read</code>, <code>io.db.write</code>, <code>io.net.out</code> — with each effect annotated by where it was declared.</p>
+        <pre><span class="p">$</span> asd effects_of processOrder</pre>
+      </div>
+      <div class="card">
+        <div class="slug">call_graph</div>
+        <h3>What calls what?</h3>
+        <p>Callers and callees for any symbol, so an agent can compute the blast radius before it changes a line.</p>
+        <pre><span class="p">$</span> asd callers_of billing.computeProration</pre>
+      </div>
+      <div class="card">
+        <div class="slug">policy</div>
+        <h3>Who's allowed to change it?</h3>
+        <p>Declarative gates that decide whether a write requires approval — evaluated on every ledger mutation.</p>
+        <pre><span class="p">$</span> asd policy eval billing/*</pre>
+      </div>
+      <div class="card">
+        <div class="slug">ratification</div>
+        <h3>Who approved this decision?</h3>
+        <p>Signed approvals (ed25519) attached to ledger entries, so a decision carries its authority with it.</p>
+        <pre><span class="p">$</span> asd ledger approve payments.chargeCard</pre>
+      </div>
+      <div class="card">
+        <div class="slug">audit</div>
+        <h3>What happened, in order?</h3>
+        <p>A tamper-evident, hash-chained log of every ledger mutation and policy decision — replayable and independently verifiable.</p>
+        <pre><span class="p">$</span> asd audit tail --path billing/*</pre>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <div class="story" data-reveal>
-      <div class="story-text">
-        <div class="story-context">Story 1 &mdash; The mystery function</div>
-        <h3>"Why does this function exist?"</h3>
-        <p>Six months ago an agent introduced <code>payments.chargeCard</code> with an unusual retry pattern. Today an agent &mdash; or a human &mdash; needs to refactor it and can't tell if the pattern is load-bearing or vestigial.</p>
-        <p>Without ASD: read the diff, search Slack, hope the original PR description survived.</p>
-        <p class="punchline">With ASD: <code>asd ledger get payments.chargeCard</code> &mdash; hazards, rationale, constraints, authority, all checked into git. The reasoning survived the rename, the file move, and the original author leaving.</p>
+<!-- MOMENTS -->
+<section class="section" id="moments" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">In practice //</span>
+      <h2>Three moments your agents already hit.</h2>
+      <p>These aren't hypotheticals — they're what happens to every team that lets agents touch real code.</p>
+    </div>
+
+    <div class="moment" data-reveal>
+      <div class="moment-text">
+        <div class="pillar" style="border:none;background:transparent;padding:0">
+          <div class="num">01 // THE MYSTERY FUNCTION</div>
+          <h3>"Why does this function exist?"</h3>
+          <p>Six months ago an agent introduced <code>payments.chargeCard</code> with an unusual retry pattern. Today it needs refactoring and no one can tell if the pattern is load-bearing or vestigial.</p>
+          <p class="answer"><strong>With ASD:</strong> <code>asd ledger get payments.chargeCard</code> returns hazards, rationale, and authority — the reasoning survived the rename, the file move, and the original author leaving.</p>
+        </div>
       </div>
       <div class="mockup">
         <div class="mockup-header">
-          <span class="icon">&#128221;</span>
           <span class="title">asd ledger get payments.chargeCard</span>
           <span class="badge-sm">RATIFIED</span>
         </div>
         <div class="blame-output">
           <div><span class="label">symbol:</span> <span class="value">payments.chargeCard</span></div>
           <div><span class="label">kind:</span> <span class="agent">hazard</span></div>
-          <div><span class="label">summary:</span> <span class="reason">"fails silently above $10,000 &mdash; caller must check return value"</span></div>
+          <div><span class="label">summary:</span> <span class="reason">"fails silently above $10,000 — caller must check return value"</span></div>
           <div><span class="label">author:</span> <span class="agent">agent/refactor-bot</span></div>
           <div><span class="label">time:</span> <span class="time">2025-11-14 16:22 UTC</span></div>
-          <div><span class="label">authority:</span> <span class="value">approved by alice@ &middot; sig ed25519</span></div>
-          <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)"><span class="label">previous:</span> <span class="agent">decision</span> <span class="time">2025-09-02</span></div>
-          <div><span class="label">rationale:</span> <span class="value">"Stripe gateway returns 200 on declined &gt;10k; documented at gateway/STRIPE-4421"</span></div>
+          <div><span class="label">authority:</span> <span class="value">approved by alice@ · sig ed25519</span></div>
+          <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)"><span class="label">rationale:</span> <span class="value">"Stripe returns 200 on declined &gt;10k; see gateway/STRIPE-4421"</span></div>
         </div>
       </div>
     </div>
 
-    <div class="story reverse" data-reveal>
-      <div class="story-text">
-        <div class="story-context">Story 2 &mdash; The blast radius</div>
-        <h3>"What does this function actually touch?"</h3>
-        <p>An agent is about to refactor <code>processOrder</code>. Before it changes a line, it needs to know: does this read from disk? hit the database? call out to an external API? &mdash; including transitively, through everything it calls.</p>
-        <p>Without ASD: read every function in the call graph by hand and guess.</p>
-        <p class="punchline">With ASD: <code>asd effects_of processOrder</code> returns the propagated 17-category effect set &mdash; <code>io.fs.read</code>, <code>io.db.write</code>, <code>io.net.out</code> &mdash; with each effect annotated by where it was declared. The agent knows the blast radius before it commits.</p>
+    <div class="moment" data-reveal>
+      <div class="moment-text">
+        <div class="pillar" style="border:none;background:transparent;padding:0">
+          <div class="num">02 // THE BLAST RADIUS</div>
+          <h3>"What does this actually touch?"</h3>
+          <p>An agent is about to refactor <code>processOrder</code>. Before it changes a line it needs to know: does this read disk? hit the database? call an external API — including transitively, through everything it calls?</p>
+          <p class="answer"><strong>With ASD:</strong> <code>asd effects_of processOrder</code> returns the propagated effect set, each annotated with where it was declared. The agent knows the blast radius before it commits.</p>
+        </div>
       </div>
       <div class="mockup">
         <div class="mockup-header">
-          <span class="icon">&#127919;</span>
           <span class="title">asd effects_of processOrder</span>
           <span class="badge-sm">TRANSITIVE</span>
         </div>
-        <div class="query-result">
-          <div style="display:flex;gap:8px;align-items:center"><span class="qr-cat">io.db.write</span><span class="qr-agent">via orders.persist</span><span class="qr-conf">declared</span></div>
-          <div class="qr-desc">Writes to <code>orders</code> table inside a transaction</div>
+        <div class="blame-output">
+          <div><span class="agent">io.db.write</span> <span class="label">via orders.persist</span> <span class="value">— writes orders table in a txn</span></div>
+          <div><span class="agent">io.net.out</span> <span class="label">via payments.chargeCard</span> <span class="value">— HTTPS POST to Stripe</span></div>
+          <div><span class="agent">io.fs.read</span> <span class="label">via config.load</span> <span class="value">— reads payments.toml</span></div>
+          <div><span class="agent">io.queue.publish</span> <span class="label">via notify.send</span> <span class="value">— order.placed → NATS</span></div>
+          <div style="margin-top:8px;color:var(--success);font-weight:700">4 effect categories · 3 transitive · policy: pass</div>
         </div>
-        <div class="query-result">
-          <div style="display:flex;gap:8px;align-items:center"><span class="qr-cat">io.net.out</span><span class="qr-agent">via payments.chargeCard</span><span class="qr-conf">transitive</span></div>
-          <div class="qr-desc">HTTPS POST to Stripe charges endpoint</div>
-        </div>
-        <div class="query-result">
-          <div style="display:flex;gap:8px;align-items:center"><span class="qr-cat">io.fs.read</span><span class="qr-agent">via config.load</span><span class="qr-conf">transitive</span></div>
-          <div class="qr-desc">Reads <code>./config/payments.toml</code> at startup</div>
-        </div>
-        <div class="query-result">
-          <div style="display:flex;gap:8px;align-items:center"><span class="qr-cat">io.queue.publish</span><span class="qr-agent">via notify.send</span><span class="qr-conf">transitive</span></div>
-          <div class="qr-desc">Publishes <code>order.placed</code> to NATS</div>
-        </div>
-        <div style="text-align:center;margin-top:8px;font-size:10px;color:var(--success);font-weight:700">4 effect categories &middot; 3 transitive &middot; policy: pass</div>
       </div>
     </div>
 
-    <div class="story" data-reveal>
-      <div class="story-text">
-        <div class="story-context">Story 3 &mdash; The regression</div>
-        <h3>"Who broke billing?"</h3>
-        <p>A regression lands in production. Billing is off by 2% on enterprise plans. The team needs to know: what changed, who changed it, who approved it, what alternatives were considered.</p>
-        <p>Without ASD: a two-day diff archaeology project.</p>
-        <p class="punchline">With ASD: <code>asd audit tail --path billing/*</code> returns the hash-chained log of every ledger mutation and policy decision in that subtree. Tamper-evident, replayable, independently verifiable.</p>
+    <div class="moment" data-reveal>
+      <div class="moment-text">
+        <div class="pillar" style="border:none;background:transparent;padding:0">
+          <div class="num">03 // THE REGRESSION</div>
+          <h3>"Who broke billing?"</h3>
+          <p>A regression lands in production — billing off by 2% on enterprise plans. The team needs to know what changed, who changed it, who approved it, and what alternatives were considered.</p>
+          <p class="answer"><strong>With ASD:</strong> <code>asd audit tail --path billing/*</code> returns the hash-chained log of every mutation and policy decision in that subtree. Tamper-evident, replayable, verifiable.</p>
+        </div>
       </div>
       <div class="mockup">
         <div class="mockup-header">
-          <span class="icon">&#128270;</span>
           <span class="title">asd audit tail --path billing/*</span>
           <span class="badge-sm">HASH-CHAINED</span>
         </div>
-        <div class="audit-line"><span class="h">9f2a&hellip;c1</span> <span class="a">agent/refactor</span> <span class="k">ledger.append</span> billing.computeProration kind=decision</div>
-        <div class="audit-line"><span class="h">b71e&hellip;88</span> <span class="a">alice@</span> <span class="k">ledger.approve</span> billing.computeProration sig=ed25519</div>
-        <div class="audit-line"><span class="h">3c0d&hellip;42</span> <span class="a">agent/refactor</span> <span class="k">effect.declare</span> billing.computeProration io.db.read</div>
-        <div class="audit-line"><span class="h">f5b2&hellip;17</span> <span class="a">policy</span> <span class="k">evaluation</span> require-approval &rarr; PASS</div>
-        <div class="audit-line"><span class="h">88a0&hellip;91</span> <span class="a">agent/refactor</span> <span class="k">sync.prune</span> 0 stale</div>
-        <div style="text-align:center;margin-top:8px;font-size:10px;color:var(--success);font-weight:700">CHAIN VERIFIED &middot; head: 88a0&hellip;91 &middot; replayable</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="anatomy" data-reveal>
-  <div class="container">
-    <p class="section-label">How it works</p>
-    <h2 class="section-title">Eight primitives, one sidecar</h2>
-    <p class="section-subtitle">ASD adds eight things to your repo. They live in <code>.asd/conclusions/</code>, travel with every clone, and are queryable from the CLI, MCP, and HTTP.</p>
-    <div class="commit-grid">
-      <div class="commit-field"><div class="cf-name">ledger</div><div class="cf-q">Why does this function exist?</div></div>
-      <div class="commit-field"><div class="cf-name">effects</div><div class="cf-q">What does it touch?</div></div>
-      <div class="commit-field"><div class="cf-name">index</div><div class="cf-q">Where is it defined?</div></div>
-      <div class="commit-field"><div class="cf-name">call_graph</div><div class="cf-q">What calls what?</div></div>
-      <div class="commit-field"><div class="cf-name">policy</div><div class="cf-q">Who's allowed to change it?</div></div>
-      <div class="commit-field"><div class="cf-name">ratification</div><div class="cf-q">Who approved this decision?</div></div>
-      <div class="commit-field"><div class="cf-name">audit</div><div class="cf-q">What happened, in order?</div></div>
-      <div class="commit-field"><div class="cf-name">sidecar</div><div class="cf-q">Does it travel with the repo?</div></div>
-    </div>
-  </div>
-</section>
-
-<section class="section" data-reveal>
-  <div class="container" style="text-align:center">
-    <p class="section-label">Languages &amp; Surfaces</p>
-    <h2 class="section-title">Nine languages, three surfaces</h2>
-    <div class="lang-grid">
-      <span class="lang-pill">Python</span>
-      <span class="lang-pill">TypeScript</span>
-      <span class="lang-pill">Rust</span>
-      <span class="lang-pill">Go</span>
-      <span class="lang-pill">Java</span>
-      <span class="lang-pill">C#</span>
-      <span class="lang-pill">Ruby</span>
-      <span class="lang-pill">Kotlin</span>
-      <span class="lang-pill">Swift</span>
-      <span class="lang-pill">CLI (asd)</span>
-      <span class="lang-pill">MCP (asd-mcp)</span>
-      <span class="lang-pill">HTTP (asd-serve)</span>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="start">
-  <div class="container">
-    <p class="section-label">Get Started</p>
-    <h2 class="section-title" data-reveal>Index your repo in 60 seconds</h2>
-    <div data-reveal>
-      <div class="terminal">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">terminal</span>
+        <div class="blame-output">
+          <div><span class="time">9f2a…c1</span> <span class="agent">agent/refactor</span> <span class="reason">ledger.append</span> computeProration</div>
+          <div><span class="time">b71e…88</span> <span class="agent">alice@</span> <span class="reason">ledger.approve</span> sig=ed25519</div>
+          <div><span class="time">3c0d…42</span> <span class="agent">agent/refactor</span> <span class="reason">effect.declare</span> io.db.read</div>
+          <div><span class="time">f5b2…17</span> <span class="agent">policy</span> <span class="reason">evaluation</span> require-approval → PASS</div>
+          <div style="margin-top:8px;color:var(--success);font-weight:700">CHAIN VERIFIED · head 88a0…91 · replayable</div>
         </div>
-        <pre class="terminal-body" id="terminal-body"></pre>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section" data-reveal>
-  <div class="container" style="text-align:center">
-    <p class="section-label">What it is not</p>
-    <h2 class="section-title">Clear on scope</h2>
-    <p class="section-subtitle" style="margin-bottom:24px">ASD is a <strong style="color:var(--text-primary)">code-level overlay</strong>. It's the layer agents query before they read, write, or refactor &mdash; not a linter, not a search tool.</p>
-    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;max-width:700px;margin:0 auto">
-      <div style="flex:1;min-width:200px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:left">
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;font-weight:600">NOT a linter</div>
-        <div style="font-size:13px;color:var(--text-secondary)">Linters check style. ASD records <em>decisions</em> &mdash; why a function exists, what it's allowed to touch, who approved it.</div>
+<!-- PAIRS WITH -->
+<section class="section" id="pairs">
+  <div class="wrap">
+    <div class="pairs" data-reveal>
+      <div>
+        <span class="eyebrow">Pairs with // CTXone</span>
+        <h2>Code context is half of it. Here's the other half.</h2>
+        <p>ASD knows what your <strong style="color:var(--text-primary)">code</strong> does — symbols, call graphs, effects, and ledger decisions. <a href="https://ctxone.com" target="_blank">CTXone</a> is the <strong style="color:var(--text-primary)">team layer</strong>: shared decisions, plans, and memory that travel across the whole team.</p>
+        <p>Wire ASD into the same Hub and your agents get both halves through one connection. Setup is one flag — installing either offers to set up the other. <a href="https://agentstategraph.dev" target="_blank">AgentStateGraph</a> is the underlying state substrate.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="https://ctxone.com" target="_blank">Visit ctxone.com</a>
+          <a class="btn btn-secondary" href="https://agentstategraph.dev" target="_blank">AgentStateGraph</a>
+        </div>
       </div>
-      <div style="flex:1;min-width:200px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:left">
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;font-weight:600">NOT a code-search tool</div>
-        <div style="font-size:13px;color:var(--text-secondary)">grep finds strings. ASD answers <em>what does this touch, who decided this, was it approved.</em></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" data-reveal>
-  <div class="container" style="max-width:760px;margin:0 auto">
-    <p class="section-label">License</p>
-    <h2 class="section-title">Why BSL 1.1?</h2>
-    <p style="font-size:16px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px;text-align:center">AgentStateDeveloper is built to become infrastructure for agent-driven coding. Infrastructure primitives are strip-mining targets: cloud providers offer them as managed services, capture the value, and contribute nothing back. BSL 1.1 closes that gap.</p>
-
-    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px">
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm)">
-        <span style="color:var(--success);font-weight:700;font-size:18px;flex-shrink:0">&#10003;</span>
-        <span style="font-size:14px;color:var(--text-secondary);line-height:1.6"><strong style="color:var(--text-primary)">Individuals, startups, and enterprises</strong> using ASD internally &mdash; including in production &mdash; are unaffected.</span>
-      </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm)">
-        <span style="color:var(--warning);font-weight:700;font-size:18px;flex-shrink:0">&#9888;</span>
-        <span style="font-size:14px;color:var(--text-secondary);line-height:1.6">The restriction covers <strong style="color:var(--text-primary)">one specific case</strong>: offering ASD as a hosted or managed service to third parties without a commercial agreement.</span>
-      </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm)">
-        <span style="color:var(--accent);font-weight:700;font-size:18px;flex-shrink:0">&#8634;</span>
-        <span style="font-size:14px;color:var(--text-secondary);line-height:1.6">After <strong style="color:var(--text-primary)">four years</strong>, each version converts to <strong style="color:var(--text-primary)">Apache 2.0 permanently</strong>, with no conditions.</span>
+      <div class="integ">
+        <div class="row"><span class="k">code_search</span><span class="v">find the symbol behind a concept</span></div>
+        <div class="row"><span class="k">code_read</span><span class="v">signature, effects, ledger</span></div>
+        <div class="row"><span class="k">callers_of</span><span class="v">blast radius before you edit</span></div>
+        <div class="row"><span class="k">callees_of</span><span class="v">what a symbol depends on</span></div>
+        <div class="row"><span class="v" style="color:var(--text-muted)">served next to CTXone memory, over MCP</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section" data-reveal>
-  <div class="container" style="text-align:center">
-    <p class="section-label">Part of a suite</p>
-    <h2 class="section-title">Pairs with CTXone &amp; AgentStateGraph</h2>
-    <p class="section-subtitle">ASD is per-developer <strong>code context</strong>. <a href="https://ctxone.com" target="_blank">CTXone</a> is the <strong>team layer</strong> &mdash; shared decisions, plans, and memory that travel across the whole team; installing either offers to set up the other. <a href="https://agentstategraph.dev" target="_blank">AgentStateGraph</a> is the underlying state substrate. Together they give agents accountable state across code, team, and runtime.</p>
-    <p class="section-subtitle" style="margin-bottom:24px">ASD ships in three editions: <strong>OSS</strong> (this repo &mdash; the full per-developer engine), <strong>Team</strong> (the cross-repo layer, paired with CTXone), and <strong>Enterprise</strong> (org-scale governance: endpoint registry, change-governance gates, audit/SIEM export, RBAC).</p>
-    <a class="btn btn-primary" href="https://ctxone.com" target="_blank">Visit ctxone.com</a>
-    <a class="btn btn-secondary" href="https://agentstategraph.dev" target="_blank" style="margin-left:12px">AgentStateGraph</a>
+<!-- EDITIONS -->
+<section class="section" id="editions">
+  <div class="wrap">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">Editions //</span>
+      <h2>Start free. Scale when your team does.</h2>
+      <p>The same engine runs at every tier — you add reach and governance, never re-platform.</p>
+    </div>
+    <div class="editions" data-reveal>
+      <div class="edition">
+        <span class="tier">OSS</span>
+        <div class="price">Free</div>
+        <div class="who">Every individual developer</div>
+        <ul>
+          <li>Full per-developer engine (this repo)</li>
+          <li>Ledger, effects, call graph, policy, audit</li>
+          <li>64 MCP tools · CLI · HTTP + Lens</li>
+          <li>9 languages · git-native sidecar</li>
+        </ul>
+        <a class="btn btn-secondary" href="/guides/quickstart/">Get started</a>
+      </div>
+      <div class="edition featured">
+        <span class="tier">Team</span>
+        <div class="price">Paired with CTXone</div>
+        <div class="who">Cross-repo, shared context</div>
+        <ul>
+          <li>Everything in OSS</li>
+          <li>Cross-repo layer wired into the CTXone Hub</li>
+          <li>Shared decisions, plans, and memory</li>
+          <li>One connection, both halves of context</li>
+        </ul>
+        <a class="btn btn-primary" href="https://ctxone.com" target="_blank">Explore Team</a>
+      </div>
+      <div class="edition">
+        <span class="tier">Enterprise</span>
+        <div class="price">Org-scale governance</div>
+        <div class="who">Regulated & large orgs</div>
+        <ul>
+          <li>Endpoint registry & change-governance gates</li>
+          <li>Audit / SIEM export</li>
+          <li>RBAC and org-scale policy</li>
+          <li>Commercial licensing & support</li>
+        </ul>
+        <a class="btn btn-secondary" href="mailto:licensing@agentstatelabs.com">Contact sales</a>
+      </div>
+    </div>
+    <p style="text-align:center;color:var(--text-muted);font-size:13px;margin-top:24px">BSL 1.1 today; each version converts to <strong style="color:var(--text-secondary)">Apache 2.0</strong> after four years. Internal use — including production — is unrestricted; only offering ASD as a hosted service to third parties needs an agreement. <a href="https://github.com/agentstatelabs/AgentStateDeveloper/blob/main/LICENSE" target="_blank">Read the license →</a></p>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-grid">
-    <div class="footer-col">
-      <h4>Product</h4>
-      <a href="https://github.com/agentstatelabs/AgentStateDeveloper" target="_blank">GitLab</a>
-      <a href="/guides/quickstart/">Quick Start</a>
-      <a href="/guides/introduction/">Introduction</a>
+    <div class="footer-brand">
+      <span class="nav-logo"><span class="glyph"></span>AgentStateDeveloper</span>
+      <p>Code-level context and audit overlay for agent-authored code. Rust core, 9 languages, 64 MCP tools, git-native sidecar.</p>
     </div>
     <div class="footer-col">
-      <h4>Resources</h4>
-      <a href="/guides/introduction/">Documentation</a>
+      <h4>Product</h4>
+      <a href="/guides/quickstart/">Quick Start</a>
+      <a href="/guides/introduction/">Introduction</a>
+      <a href="https://github.com/agentstatelabs/AgentStateDeveloper" target="_blank">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h4>Reference</h4>
       <a href="/reference/mcp-tools/">MCP Tools</a>
       <a href="/reference/cli-mcp-mapping/">CLI ↔ MCP Mapping</a>
+      <a href="/guides/concepts/">Concepts</a>
     </div>
     <div class="footer-col">
       <h4>Ecosystem</h4>
+      <a href="https://ctxone.com" target="_blank">CTXone</a>
       <a href="https://agentstategraph.dev" target="_blank">AgentStateGraph</a>
       <a href="https://github.com/agentstatelabs/AgentStateDeveloper/blob/main/LICENSE" target="_blank">License (BSL 1.1)</a>
-      <a href="mailto:licensing@agentstatelabs.com">Contact</a>
     </div>
   </div>
   <div class="footer-bottom">
-    AgentStateDeveloper &middot; BSL 1.1 &middot; Rust core, 9 languages, 64 MCP tools, git-native sidecar
+    AgentStateDeveloper · BSL 1.1 → Apache 2.0 · © AgentStateLabs
   </div>
 </footer>
 
 <script>
 (function() {
   'use strict';
+  // Reveal on scroll
   var els = document.querySelectorAll('[data-reveal]');
-  if (els.length) {
+  if (els.length && 'IntersectionObserver' in window) {
     var obs = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.12 });
     els.forEach(function(el) { obs.observe(el); });
+  } else {
+    els.forEach(function(el) { el.classList.add('revealed'); });
   }
-  var nav = document.querySelector('.nav'), hero = document.querySelector('.hero');
-  if (nav && hero) {
-    var hb = hero.offsetTop + hero.offsetHeight;
-    window.addEventListener('scroll', function() { nav.classList.toggle('visible', window.scrollY > hb - 60); }, { passive: true });
+
+  // Install tabs
+  var tabs = document.querySelectorAll('.tab');
+  var cmdEl = document.getElementById('install-cmd');
+  tabs.forEach(function(t) {
+    t.addEventListener('click', function() {
+      tabs.forEach(function(x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      if (cmdEl) cmdEl.textContent = t.getAttribute('data-cmd');
+    });
+  });
+
+  // Copy helpers
+  function copy(text, el, label) {
+    if (navigator.clipboard) { navigator.clipboard.writeText(text).catch(function(){}); }
+    if (el) { var o = el.textContent; el.textContent = label || 'COPIED'; setTimeout(function(){ el.textContent = o; }, 1400); }
   }
-  var tb = document.getElementById('terminal-body');
-  if (tb) {
-    var played = false;
-    var cmds = [
-      {p:'$ ',t:'brew install asd',d:20},
-      {p:'$ ',t:'cd my-project && asd init',d:25},
-      {p:'$ ',t:'asd index .',d:30},
-      {o:'Indexing 42 files under . …\nDone. 187 symbols, 187 effects. (12 files skipped)',w:400},
-      {p:'$ ',t:'asd read payments.chargeCard',d:25},
-    ];
-    function type() {
-      if (played) return; played = true; tb.textContent = '';
-      var delay = 0;
-      cmds.forEach(function(c) {
-        if (c.o) {
-          delay += c.w||300;
-          var d=delay;
-          setTimeout(function() { var s=document.createElement('span'); s.className='output'; s.textContent=c.o+'\n'; tb.appendChild(s); }, d);
-          delay += 100;
-        } else {
-          var pd=delay;
-          setTimeout(function() { var s=document.createElement('span'); s.className='prompt'; s.textContent=c.p; tb.appendChild(s); }, pd);
-          delay += 50;
-          c.t.split('').forEach(function(ch,i) {
-            var cd=delay+i*(c.d||30);
-            setTimeout(function() { var s=document.createElement('span'); s.className='cmd'; s.textContent=ch; tb.appendChild(s); }, cd);
-          });
-          delay += c.t.length*(c.d||30)+200;
-          var nd=delay;
-          setTimeout(function() { tb.appendChild(document.createTextNode('\n')); }, nd);
-          delay += 50;
-        }
-      });
-      setTimeout(function() { var cur=document.createElement('span'); cur.className='cursor'; cur.textContent=' '; tb.appendChild(cur); }, delay+100);
-    }
-    var to = new IntersectionObserver(function(e) { if(e[0].isIntersecting){type();to.disconnect();} }, {threshold:0.4});
-    to.observe(tb);
-  }
+  var copyCmd = document.getElementById('copy-cmd');
+  if (copyCmd) copyCmd.addEventListener('click', function() { copy(cmdEl.textContent, copyCmd, 'COPIED'); });
+  var copyPrompt = document.getElementById('copy-prompt');
+  if (copyPrompt) copyPrompt.addEventListener('click', function() {
+    var p = document.getElementById('agent-prompt');
+    copy(p ? p.innerText : '', copyPrompt, 'COPIED');
+  });
 })();
 </script>
 </body>
