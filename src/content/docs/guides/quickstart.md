@@ -18,6 +18,12 @@ Or the cross-platform one-liner:
 curl -fsSL https://raw.githubusercontent.com/agentstatelabs/AgentStateDeveloper/main/install.sh | sh
 ```
 
+On Windows (PowerShell):
+
+```powershell
+iwr https://raw.githubusercontent.com/agentstatelabs/AgentStateDeveloper/main/install.ps1 | iex
+```
+
 > Building from source? `cargo install --path crates/agentstatedeveloper-cli` (and `...-mcp` for asd-mcp + asd-serve). The crate name `asd` on crates.io is an unrelated diff tool, so install via Homebrew or source.
 
 ## Initialize your project
