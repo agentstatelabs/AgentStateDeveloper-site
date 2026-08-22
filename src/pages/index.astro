@@ -340,13 +340,18 @@ import Site from '../layouts/Site.astro';
 </section>
 
 <!-- EDITIONS -->
-<section class="section" id="editions">
+<section class="section" id="license">
   <div class="wrap">
     <div class="section-head center" data-reveal>
-      <span class="eyebrow">Editions //</span>
-      <h2>Start free. Scale when your team does.</h2>
-      <p>The same engine runs at every tier — Team and Enterprise add reach and governance on top of the open core. No feature is held hostage; the paid tiers are about running ASD for many people, not unlocking the product.</p>
+      <span class="eyebrow">License //</span>
+      <h2>Open source, self-hosted, nothing held back.</h2>
+      <p>ASD is the whole per-developer engine on your machine — all 64 MCP tools, the CLI, the HTTP and Lens UI, ledger, effects, call graph, policy, and audit. No account, no telemetry.</p>
     </div>
+    {/* Team & Enterprise are not yet available — the three-tier grid is
+        withheld until those tiers ship. Restore this block verbatim (and the
+        "Editions //" heading above, plus the nav/footer links in
+        src/layouts/Site.astro) to bring it back.
+
     <div class="editions" data-reveal>
       <div class="edition oss">
         <span class="tier">OSS</span>
@@ -386,6 +391,7 @@ import Site from '../layouts/Site.astro';
         <a class="cta" href="mailto:licensing@agentstatelabs.com">Contact sales →</a>
       </div>
     </div>
+    */}
     <p style="text-align:center;color:var(--text-muted);font-size:13px;margin-top:24px">BSL 1.1 today; each version converts to <strong style="color:var(--text-secondary)">Apache 2.0</strong> after four years. Internal use — including production — is unrestricted; only offering ASD as a hosted service to third parties needs an agreement. <a href="https://github.com/agentstatelabs/AgentStateDeveloper/blob/main/LICENSE" target="_blank">Read the license →</a></p>
   </div>
 </section>
