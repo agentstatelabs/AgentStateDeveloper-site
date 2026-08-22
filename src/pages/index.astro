@@ -237,6 +237,83 @@ import Site from '../layouts/Site.astro';
   </div>
 </section>
 
+<!-- LENS -->
+<section class="section" id="lens">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Lens // review UI</span>
+      <h2>See what your agents know.</h2>
+      <p><code>asd-serve</code> ships a web UI over the same index and audit overlay your agents query — the whole codebase as a stable map, per-symbol decision ledgers and verified effects, and effect blast radius, in the browser.</p>
+    </div>
+    <a class="lens-hero" href="/img/asd-lens-territory.png" data-reveal>
+      <img
+        src="/img/asd-lens-territory.png"
+        alt="ASD Lens — the codebase rendered as territory: regions sized by symbol count, with structure, decisions, thinking, effects, and activity as toggleable layers"
+        width="1440"
+        height="1000"
+        loading="lazy"
+        decoding="async"
+      />
+    </a>
+    <div class="lens-grid" data-reveal>
+      <figure>
+        <a href="/img/asd-lens-symbol.png">
+          <img src="/img/asd-lens-symbol.png" alt="Symbol detail — callers, callees, verified effects, and the decision ledger for one symbol" loading="lazy" decoding="async" />
+        </a>
+        <figcaption><strong>Symbol detail</strong> — callers/callees, static-checker-verified effects, and the full decision ledger, invariants, and inherited thinking for one symbol.</figcaption>
+      </figure>
+      <figure>
+        <a href="/img/asd-lens-effects.png">
+          <img src="/img/asd-lens-effects.png" alt="Effect distribution — per-category effect counts and the declarers with the widest transitive blast radius" loading="lazy" decoding="async" />
+        </a>
+        <figcaption><strong>Effect distribution</strong> — per-category effect counts and the declarers whose effects reach the most callers (transitive blast radius).</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  #lens .lens-hero {
+    display: block;
+    max-width: var(--maxw, 1100px);
+    margin: 2rem auto 0;
+  }
+  #lens .lens-hero img,
+  #lens .lens-grid img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius, 12px);
+  }
+  #lens .lens-hero img {
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  }
+  #lens .lens-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+    margin-top: 2rem;
+  }
+  #lens figure {
+    margin: 0;
+  }
+  #lens figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+  #lens figcaption strong {
+    color: var(--text-primary);
+  }
+  @media (max-width: 800px) {
+    #lens .lens-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
 <!-- PAIRS WITH -->
 <section class="section" id="pairs">
   <div class="wrap">
