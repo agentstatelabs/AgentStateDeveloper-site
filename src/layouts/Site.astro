@@ -7,6 +7,7 @@ const {
   active = '',
   url = 'https://agentstatedeveloper.dev',
 } = Astro.props;
+const year = new Date().getFullYear();
 const nav = [
   { label: 'Why ASD', href: '/why/', key: 'why' },
   { label: 'Docs', href: '/guides/introduction/', key: 'docs' },
@@ -354,7 +355,7 @@ const nav = [
     </div>
   </div>
   <div class="footer-bottom">
-    AgentStateDeveloper · BSL 1.1 → Apache 2.0 · © AgentStateLabs
+    AgentStateDeveloper · BSL 1.1 → Apache 2.0 · &copy; {year} AgentStateLabs, LLC.
   </div>
 </footer>
 
