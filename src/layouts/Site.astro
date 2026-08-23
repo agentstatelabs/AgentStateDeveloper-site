@@ -13,6 +13,9 @@ const nav = [
   { label: 'Docs', href: '/guides/introduction/', key: 'docs' },
   { label: 'Use cases', href: '/use-cases/', key: 'use-cases' },
   { label: 'Blog', href: '/blog/', key: 'blog' },
+  // Parent-brand backlink, last before the GitHub button. See
+  // agentstatelabs-site/BRANDING.md.
+  { label: 'AgentStateLabs', href: 'https://agentstatelabs.com/', key: 'asl', external: true },
   // Withheld until the Team & Enterprise tiers ship:
   // { label: 'Team & Enterprise', href: '/#editions', key: 'editions' },
 ];
@@ -296,6 +299,14 @@ const nav = [
     .footer-col h4 { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
     .footer-col a { display: block; color: var(--text-secondary); font-size: 13px; padding: 4px 0; }
     .footer-col a:hover { color: var(--accent-bright); filter: none; }
+    /* Parent-brand lockup — see agentstatelabs-site/BRANDING.md. Separate
+       from the copyright line below it: positioning vs legal notice. */
+    .parent-brand { display: flex; align-items: center; justify-content: center; gap: 8px; border-top: none !important; padding-top: 0 !important; }
+    .parent-brand a { color: var(--text-primary); font-weight: 600; }
+    /* ASL's neutral gradient, not ASD's purple, so it reads as parent brand. */
+    .asl-glyph { width: 15px; height: 15px; border-radius: 4px; flex-shrink: 0; background: linear-gradient(135deg, #64748b, #e2e8f0); }
+    .nav-asl { opacity: 0.75; }
+    .nav-asl:hover { opacity: 1; }
     .footer-bottom { text-align: center; font-size: 12px; color: var(--text-muted); padding-top: 24px; border-top: 1px solid var(--border); max-width: var(--maxw); margin: 0 auto; }
     @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
 
@@ -319,7 +330,11 @@ const nav = [
     <a class="nav-logo" href="/"><span class="glyph"></span>AgentStateDeveloper</a>
     <div class="nav-links">
       {nav.map((n) => (
-        <a href={n.href} class={active === n.key ? 'active' : ''}>{n.label}</a>
+        <a
+          href={n.href}
+          class={`${active === n.key ? 'active' : ''} ${n.external ? 'nav-asl' : ''}`}
+          {...(n.external ? { target: '_blank', rel: 'noopener' } : {})}
+        >{n.label}</a>
       ))}
       <a class="nav-gh" href="https://github.com/agentstatelabs/AgentStateDeveloper" target="_blank">GitHub</a>
     </div>
@@ -353,6 +368,11 @@ const nav = [
       <a href="https://agentstategraph.dev" target="_blank">AgentStateGraph</a>
       <a href="https://github.com/agentstatelabs/AgentStateDeveloper/blob/main/LICENSE" target="_blank">License (BSL 1.1)</a>
     </div>
+  </div>
+  <div class="footer-bottom parent-brand">
+    <span class="asl-glyph"></span>
+    A product of
+    <a href="https://agentstatelabs.com/" target="_blank" rel="noopener">AgentStateLabs</a>
   </div>
   <div class="footer-bottom">
     AgentStateDeveloper · BSL 1.1 → Apache 2.0 · &copy; {year} AgentStateLabs, LLC.
