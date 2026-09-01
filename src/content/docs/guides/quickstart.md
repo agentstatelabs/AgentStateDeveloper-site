@@ -9,8 +9,14 @@ Homebrew (recommended):
 
 ```bash
 brew tap agentstatelabs/agentstatedeveloper
+brew trust agentstatelabs/agentstatedeveloper   # Homebrew 6.0+ only
 brew install asd   # installs asd, asd-mcp, and asd-serve
 ```
+
+Homebrew 6.0 refuses to load formulae from untrusted third-party taps, so the
+`brew trust` step is required — without it the install stops with *"Refusing to
+load formula ... from untrusted tap"*. Older Homebrew has no `trust` subcommand
+and does not need one.
 
 Or the cross-platform one-liner:
 

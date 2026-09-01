@@ -21,18 +21,18 @@ import Site from '../layouts/Site.astro';
       </div>
       <pre id="agent-prompt">Set up AgentStateDeveloper for this repository. Run each step, then report back once asd is installed, this repo is indexed, and the MCP server is connected.
 
-<span class="c">1. brew install asd</span>   — install the asd, asd-mcp, and asd-serve binaries
+<span class="c">1. brew tap agentstatelabs/agentstatedeveloper &amp;&amp; brew trust agentstatelabs/agentstatedeveloper &amp;&amp; brew install asd</span>   — install the asd, asd-mcp, and asd-serve binaries
 <span class="c">2. asd onboard</span>        — index the repo and register the MCP server (project-scoped)</pre>
 
       <div class="install-or">OR INSTALL DIRECTLY</div>
       <div class="tabs" id="tabs">
-        <button class="tab active" data-cmd="brew tap agentstatelabs/agentstatedeveloper && brew install asd">Homebrew<span class="os">macOS · Linux</span></button>
+        <button class="tab active" data-cmd="brew tap agentstatelabs/agentstatedeveloper && brew trust agentstatelabs/agentstatedeveloper && brew install asd">Homebrew<span class="os">macOS · Linux</span></button>
         <button class="tab" data-cmd="curl -fsSL https://raw.githubusercontent.com/agentstatelabs/AgentStateDeveloper/main/install.sh | sh">Shell<span class="os">macOS · Linux</span></button>
         <button class="tab" data-cmd="iwr https://raw.githubusercontent.com/agentstatelabs/AgentStateDeveloper/main/install.ps1 | iex">PowerShell<span class="os">Windows</span></button>
       </div>
       <div class="cmd-row">
         <span class="dollar">$</span>
-        <code id="install-cmd">brew tap agentstatelabs/agentstatedeveloper && brew install asd</code>
+        <code id="install-cmd">brew tap agentstatelabs/agentstatedeveloper && brew trust agentstatelabs/agentstatedeveloper && brew install asd</code>
         <span class="copy" id="copy-cmd">COPY</span>
       </div>
       <div class="runs-on">
